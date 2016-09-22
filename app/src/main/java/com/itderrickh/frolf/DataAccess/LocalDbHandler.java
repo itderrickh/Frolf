@@ -44,7 +44,7 @@ public class LocalDbHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertPokemon(Pokemon pokemon) {
+    /*public void insertPokemon(Pokemon pokemon) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, pokemon.getName());
@@ -70,7 +70,7 @@ public class LocalDbHandler extends SQLiteOpenHelper {
         }
 
         return pokemonList;
-    }
+    }*/
 
     public boolean hasValues() {
         String countQuery = "SELECT * FROM " + TABLE_SETTINGS;

@@ -13,7 +13,7 @@ import okhttp3.Response;
 public class LoginService {
     private static LoginService me;
     private static OkHttpClient client;
-    private static String LOGIN_URL = "http://webdev.cs.uwosh.edu/students/heined50/login.php";
+    private static String LOGIN_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/login.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
