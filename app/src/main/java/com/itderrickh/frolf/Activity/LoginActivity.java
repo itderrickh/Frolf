@@ -3,6 +3,9 @@ package com.itderrickh.frolf.Activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -50,6 +53,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        if(preferences.contains("Auth_Token")) {
+            //Start the main page and make sure they can't back button to the login
+            Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(main);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -89,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        final String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -129,10 +140,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
-                    String str = response.body().string();
+                    String token = response.body().string();
+                    SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("Auth_Token", token);
+                    editor.putString("Email", email);
+                    editor.apply();
 
-                    main.putExtra("token", str);
+                    //Start the main page and make sure they can't back button to the login
+                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                    main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(main);
                 }
             });
