@@ -9,13 +9,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.MediaType;
 import okhttp3.Response;
+import okhttp3.FormBody.Builder;
 
 public class LoginService {
     private static LoginService me;
     private static OkHttpClient client;
-    private static String LOGIN_URL = "http://webdev.cs.uwosh.edu/students/heined50/login.php";
+    private static String LOGIN_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/login.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType FORM = MediaType.parse("multipart/form-data; charset=utf-8");
 
     private LoginService() { }
 
@@ -29,11 +31,13 @@ public class LoginService {
     }
 
     public Call login(String email, String password, Callback callback) {
-        String json = "{\"email\": " + email  +", \"password\": " + password + "}";
-        RequestBody body = RequestBody.create(JSON, json);
+        RequestBody formBody = new Builder()
+                .add("email", email)
+                .add("password", password)
+                .build();
         Request request = new Request.Builder()
                 .url(LOGIN_URL)
-                .post(body)
+                .post(formBody)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);

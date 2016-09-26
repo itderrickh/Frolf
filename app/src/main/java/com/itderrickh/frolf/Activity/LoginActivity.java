@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,13 +41,6 @@ import okhttp3.Response;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -127,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            LoginService.getInstance().login("itderrickh@gmail.com", "tester", new Callback() {
+            LoginService.getInstance().login(email, password, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     System.out.println("Failure");
@@ -135,7 +129,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    System.out.println(response.body().string());
+                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                    String str = response.body().string();
+
+                    main.putExtra("token", str);
+                    startActivity(main);
                 }
             });
         }
