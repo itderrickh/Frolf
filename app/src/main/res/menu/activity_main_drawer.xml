@@ -3,10 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Example" />
-
+            android:id="@+id/nav_creategroup"
+            android:icon="@drawable/ic_person_pin_circle"
+            android:title="@string/create_group" />
     </group>
 
     <item android:title="Account">
@@ -14,8 +13,7 @@
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_power_settings"
-                android:title="Logout" />
+                android:title="@string/logout" />
         </menu>
     </item>
-
 </menu>
