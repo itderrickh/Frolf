@@ -18,7 +18,8 @@ import okhttp3.RequestBody;
 public class GroupService {
     private static GroupService me;
     private static OkHttpClient client;
-    private static String CREATE_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/createGroup.php";
+    private static final String CREATE_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/createGroup.php";
+    private static final String GET_GROUPS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getGroups.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
@@ -51,6 +52,17 @@ public class GroupService {
                 .url(CREATE_GROUP_URL)
                 .addHeader("Authorize", token)
                 .post(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call getGroupsNearMe(String token, Callback callback) {
+        Request request = new Request.Builder()
+                .url(GET_GROUPS_URL)
+                .addHeader("Authorize", token)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);
