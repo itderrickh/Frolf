@@ -33,7 +33,7 @@ public class GroupService {
         return me;
     }
 
-    public Call createGroup(String groupName, Location loc, Callback callback) {
+    public Call createGroup(String token, String groupName, Location loc, Callback callback) {
         JSONObject jsonBuilder = new JSONObject();
         String json = "{}";
 
@@ -49,6 +49,7 @@ public class GroupService {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(CREATE_GROUP_URL)
+                .addHeader("Authorize", token)
                 .post(body)
                 .build();
         Call call = client.newCall(request);

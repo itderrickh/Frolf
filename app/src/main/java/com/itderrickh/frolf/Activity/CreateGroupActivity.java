@@ -1,7 +1,9 @@
 package com.itderrickh.frolf.Activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -49,13 +51,16 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
             initializeLocationManager();
         }
 
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        final String token = preferences.getString("Auth_Token", "");
+
         Button submitButton = (Button)findViewById(R.id.createGroup);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TextView groupNameField = (TextView) findViewById(R.id.groupName);
                 String groupName = groupNameField.getText().toString();
-                GroupService.getInstance().createGroup(groupName, location, new Callback() {
+                GroupService.getInstance().createGroup(token, groupName, location, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         Toast.makeText(getApplicationContext(), "Unable to create group.", Toast.LENGTH_SHORT).show();
@@ -63,15 +68,11 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        final String groupId = response.body().string();
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView groupNameField = (TextView) findViewById(R.id.groupName);
-                                groupNameField.setText(groupId);
-                            }
-                        });
+                        final int groupId = Integer.parseInt(response.body().string());
+                        Intent score = new Intent(getApplicationContext(), ScoreActivity.class);
+                        score.putExtra("groupId", groupId);
+                        score.putExtra("token", token);
+                        startActivity(score);
                     }
                 });
             }

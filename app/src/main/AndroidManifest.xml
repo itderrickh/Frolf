@@ -29,7 +29,14 @@
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.CreateGroupActivity"></activity>
+        <activity android:name=".Activity.CreateGroupActivity" />
+        <activity android:name=".Activity.ScoreActivity" />
+        <activity android:name=".Activity.JoinGroupActivity" />
+
+        <service
+            android:name=".Services.ScoreService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>
