@@ -4,11 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.ScoreService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,7 +23,14 @@ public class ScoreActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_score);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.activity_score_land);
+            getSupportActionBar().hide();
+        } else {
+            setContentView(R.layout.activity_score);
+        }
+
         this.groupId = getIntent().getIntExtra("groupId", 0);
         this.token = getIntent().getStringExtra("token");
         receiver = new BroadcastReceiver() {
@@ -29,9 +38,14 @@ public class ScoreActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 try {
                     String data = intent.getStringExtra("data");
-                    JSONObject result = new JSONObject(data);
-                } catch (JSONException ex) {
+                    JSONArray result = new JSONArray(data);
+                    JSONObject row;
+                    for (int i = 0; i < result.length(); i++) {
+                        row = result.getJSONObject(i);
 
+                    }
+                } catch (Exception ex) {
+                    //Handle exception here
                 }
             }
         };
