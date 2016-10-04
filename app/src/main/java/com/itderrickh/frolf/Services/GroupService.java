@@ -45,6 +45,8 @@ public class GroupService {
             json = jsonBuilder.toString();
         } catch (JSONException ex) {
             //TODO: handle exception
+        } catch (NullPointerException ex) {
+            //TODO: handle missing longitude and latitude
         }
 
         RequestBody body = RequestBody.create(JSON, json);

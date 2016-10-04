@@ -91,11 +91,6 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        this.location = location;
-    }
-
-    @Override
     public void onPause()
     {
         super.onPause();
@@ -104,6 +99,8 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
             try {
                 locationManager.removeUpdates(this);
             } catch (SecurityException ex) {
+                Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
+            } catch (IllegalArgumentException ex) {
                 Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
             }
         }
@@ -119,6 +116,8 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
                 locationManager.requestLocationUpdates(locationProvider, 400, 1, this);
             } catch (SecurityException ex) {
                 Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
+            } catch (IllegalArgumentException ex) {
+                Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -130,7 +129,21 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     public void onProviderDisabled(String enabled) {}
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        try {
+            this.location = location;
+            locationManager.removeUpdates(this);
+            Toast.makeText(getApplicationContext(), "Location found!", Toast.LENGTH_SHORT).show();
+        } catch (SecurityException ex) {
+            Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
+        } catch (IllegalArgumentException ex) {
+            Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     @Override
     public void onRequestPermissionsResult(
@@ -173,6 +186,9 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
                 locationManager.removeUpdates(this);
             }
         } catch (SecurityException ex) {
+            Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
+        } catch (IllegalArgumentException ex) {
+            //TODO: make sure they update location settings
             Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
         }
     }
