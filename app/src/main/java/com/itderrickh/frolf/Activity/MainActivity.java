@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity
             Intent login = new Intent(getApplicationContext(), LoginActivity.class);
             login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(login);
+        } else if (id ==  R.id.nav_joingroup) {
+            Intent joinGroup = new Intent(getApplicationContext(), JoinGroupActivity.class);
+            startActivity(joinGroup);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

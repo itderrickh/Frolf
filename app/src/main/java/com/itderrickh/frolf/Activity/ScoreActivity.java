@@ -44,9 +44,20 @@ public class ScoreActivity extends AppCompatActivity {
                     String data = intent.getStringExtra("data");
                     JSONArray result = new JSONArray(data);
                     JSONObject row;
+                    int column = 0;
+                    String userRow;
                     for (int i = 0; i < result.length(); i++) {
                         row = result.getJSONObject(i);
-                        fillRowsWithScores(row, i, (i + 1) / 18);
+                        if(i % 18 == 0) {
+                            column++;
+                            userRow = "user" + column;
+                            TextView updateView = (TextView) findViewById(getResId(userRow, R.id.class));
+                            try {
+                                updateView.setText(row.getString("email"));
+                            } catch(Exception e) { }
+                        }
+
+                        fillRowsWithScores(row, column, (i % 18) + 1);
                     }
                 } catch (Exception ex) {
                     //Handle exception here
@@ -55,9 +66,9 @@ public class ScoreActivity extends AppCompatActivity {
         };
     }
 
-    private void fillRowsWithScores(JSONObject row, int index, int rowNum) {
-        int colNum = index + 1;
-        TextView updateView = (TextView) findViewById(getResId("score" + colNum + "" + rowNum, R.id.class));
+    private void fillRowsWithScores(JSONObject row, int colNum, int rowNum) {
+        String viewName = "score" + colNum + String.format("%02d", rowNum);
+        TextView updateView = (TextView) findViewById(getResId(viewName, R.id.class));
         try {
             updateView.setText(row.getString("value"));
         } catch(Exception e) { }

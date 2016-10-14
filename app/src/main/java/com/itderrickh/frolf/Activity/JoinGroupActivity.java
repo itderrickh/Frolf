@@ -4,13 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
+import com.itderrickh.frolf.Helpers.Group;
+import com.itderrickh.frolf.Helpers.JoinGroupAdapter;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.GroupService;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,6 +32,8 @@ public class JoinGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
 
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        final ListView groupList = (ListView) findViewById(R.id.groupList);
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
         GroupService.getInstance().getGroupsNearMe(token, new Callback() {
@@ -36,10 +47,33 @@ public class JoinGroupActivity extends AppCompatActivity {
                 String data = response.body().string();
 
                 try {
-                    JSONObject result = new JSONObject(data);
+                    final ArrayList<Group> groups = new ArrayList<>();
+                    Group groupRow;
+                    JSONArray result = new JSONArray(data);
+                    for(int i = 0; i < result.length(); i++) {
+                        JSONObject row = result.getJSONObject(i);
+                        groupRow = new Group(
+                                    row.getInt("id"),
+                                    row.getString("name"),
+                                    row.getDouble("latitude"),
+                                    row.getDouble("longitude"),
+                                    row.getString("email")
+                        );
 
-                    //Add the data to the list with an adapter
-                } catch (Exception ex) { }
+                        groups.add(groupRow);
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            JoinGroupAdapter adapter = new JoinGroupAdapter(getApplicationContext(), R.layout.group_row, groups);
+                            groupList.setAdapter(adapter);
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
