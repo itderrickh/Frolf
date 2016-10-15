@@ -1,11 +1,13 @@
 package com.itderrickh.frolf.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -34,6 +36,7 @@ public class JoinGroupActivity extends AppCompatActivity {
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ListView groupList = (ListView) findViewById(R.id.groupList);
+
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
         GroupService.getInstance().getGroupsNearMe(token, new Callback() {
@@ -69,6 +72,26 @@ public class JoinGroupActivity extends AppCompatActivity {
                             JoinGroupAdapter adapter = new JoinGroupAdapter(getApplicationContext(), R.layout.group_row, groups);
                             groupList.setAdapter(adapter);
                             progressBar.setVisibility(View.INVISIBLE);
+                            groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                                    final int groupId = groups.get(arg2).getId();
+                                    GroupService.getInstance().joinGroup(token, groupId, new Callback() {
+                                        @Override
+                                        public void onFailure(Call call, IOException e) {
+                                            //TODO: handle failure
+                                        }
+
+                                        @Override
+                                        public void onResponse(Call call, Response response) throws IOException {
+                                            Intent score = new Intent(getApplicationContext(), ScoreActivity.class);
+                                            score.putExtra("groupId", groupId);
+                                            score.putExtra("token", token);
+                                            startActivity(score);
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 } catch (Exception ex) {

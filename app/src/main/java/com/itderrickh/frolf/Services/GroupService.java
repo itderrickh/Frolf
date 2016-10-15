@@ -20,6 +20,7 @@ public class GroupService {
     private static OkHttpClient client;
     private static final String CREATE_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/createGroup.php";
     private static final String GET_GROUPS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getGroups.php";
+    private static final String JOIN_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/joinGroup.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
@@ -52,6 +53,29 @@ public class GroupService {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(CREATE_GROUP_URL)
+                .addHeader("Authorize", token)
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call joinGroup(String token, int groupId, Callback callback) {
+        JSONObject jsonBuilder = new JSONObject();
+        String json = "{}";
+
+        try {
+            jsonBuilder.put("groupId", groupId);
+            json = jsonBuilder.toString();
+        } catch (JSONException ex) {
+            //TODO: handle json exception
+        }
+
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(JOIN_GROUP_URL)
                 .addHeader("Authorize", token)
                 .post(body)
                 .build();
