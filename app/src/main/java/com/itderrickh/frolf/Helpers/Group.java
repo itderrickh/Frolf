@@ -1,10 +1,5 @@
 package com.itderrickh.frolf.Helpers;
 
-import java.util.Date;
-
-/**
- * Created by derrickheinemann on 10/13/16.
- */
 public class Group {
     private int id;
     private String name;

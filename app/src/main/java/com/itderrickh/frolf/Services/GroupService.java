@@ -21,6 +21,7 @@ public class GroupService {
     private static final String CREATE_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/createGroup.php";
     private static final String GET_GROUPS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getGroups.php";
     private static final String JOIN_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/joinGroup.php";
+    private static final String UPDATE_SCORE_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/updateScore.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
@@ -89,6 +90,30 @@ public class GroupService {
         Request request = new Request.Builder()
                 .url(GET_GROUPS_URL)
                 .addHeader("Authorize", token)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call updateScore(String token, int scoreId, int score, Callback callback) {
+        JSONObject jsonBuilder = new JSONObject();
+        String json = "{}";
+
+        try {
+            jsonBuilder.put("scoreId", scoreId);
+            jsonBuilder.put("score", score);
+            json = jsonBuilder.toString();
+        } catch (JSONException ex) {
+            //TODO: handle json exception
+        }
+
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(UPDATE_SCORE_URL)
+                .addHeader("Authorize", token)
+                .post(body)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);

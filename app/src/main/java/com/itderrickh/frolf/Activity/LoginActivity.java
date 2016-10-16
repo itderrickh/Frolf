@@ -53,14 +53,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
-        if(preferences.contains("Auth_Token")) {
-            //Start the main page and make sure they can't back button to the login
-            Intent main = new Intent(getApplicationContext(), MainActivity.class);
-            main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(main);
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -87,6 +79,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        if(preferences.contains("Auth_Token")) {
+            //Start the main page and make sure they can't back button to the login
+            Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(main);
+        }
     }
 
     /**
