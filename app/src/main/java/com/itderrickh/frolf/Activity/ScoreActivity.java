@@ -46,15 +46,17 @@ public class ScoreActivity extends AppCompatActivity {
             setContentView(R.layout.activity_score);
         }
 
+        //Get the email for the user
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String userEmail = preferences.getString("Email", "");
 
         scoreIds = new ArrayList<Integer>();
 
-        //Stuff for landscape
         this.groupId = getIntent().getIntExtra("groupId", 0);
         this.token = getIntent().getStringExtra("token");
         scores = new HashMap<>(18, 0.75f);
+
+        //Handle updates from the score service
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -64,14 +66,18 @@ public class ScoreActivity extends AppCompatActivity {
                     JSONObject row;
                     int column = 0;
                     String userRow;
+                    //Setup objects on the result
                     for (int i = 0; i < result.length(); i++) {
                         row = result.getJSONObject(i);
                         String email = row.getString("email");
+
+                        //Only keep scores for the current user
                         if(userEmail.equals(email)) {
                             scoreIds.add(row.getInt("id"));
                             scores.put(row.getInt("id"), new Score(row.getInt("id"), row.getInt("value"), row.getInt("user"), row.getInt("holeNum"), groupId));
                         }
 
+                        //Handle logic for each row
                         if(i % 18 == 0) {
                             column++;
                             userRow = "user" + column;
@@ -82,9 +88,11 @@ public class ScoreActivity extends AppCompatActivity {
                             } catch(Exception e) { }
                         }
 
+                        //Show the correct scores in each row
                         fillRowsWithScores(row, column, (i % 18) + 1);
                     }
 
+                    //Handle showing the score fragment on data reception
                     if(scoreIds.size() > 0 && firstReceive) {
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

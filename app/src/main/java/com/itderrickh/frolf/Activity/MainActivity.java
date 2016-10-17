@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Navigation drawer stuff
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Get our preferences for auth and email
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         String token = preferences.getString("Auth_Token", "");
         String email = preferences.getString("Email", "");
@@ -46,12 +48,14 @@ public class MainActivity extends AppCompatActivity
         TextView emailView = (TextView)header.findViewById(R.id.userEmail);
         TextView userView = (TextView)header.findViewById(R.id.userName);
 
+        //Set the email in the drawer
         emailView.setText(email);
         userView.setText("");
     }
 
     @Override
     public void onBackPressed() {
+        //Handle closing the drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -88,16 +92,20 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_creategroup) {
+            //Start the create group page
             Intent createGroup = new Intent(getApplicationContext(), CreateGroupActivity.class);
             startActivity(createGroup);
         } else if (id == R.id.nav_logout) {
+            //Log the user out and remove the auth token
             SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
             preferences.edit().remove("Auth_Token").remove("Email").commit();
 
+            //Go to the login page
             Intent login = new Intent(getApplicationContext(), LoginActivity.class);
             login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(login);
         } else if (id ==  R.id.nav_joingroup) {
+            //Start the join group page
             Intent joinGroup = new Intent(getApplicationContext(), JoinGroupActivity.class);
             startActivity(joinGroup);
         }

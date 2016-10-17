@@ -43,6 +43,7 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
         setContentView(R.layout.activity_create_group);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //We have to check for permissions before we use the location
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if(permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -51,15 +52,18 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
             initializeLocationManager();
         }
 
+        //Get the shared pref for auth token
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
 
+        //Set up the submit to create a group
         Button submitButton = (Button)findViewById(R.id.createGroup);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TextView groupNameField = (TextView) findViewById(R.id.groupName);
                 String groupName = groupNameField.getText().toString();
+                //Call the service to make the group
                 GroupService.getInstance().createGroup(token, groupName, location, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
@@ -95,6 +99,7 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     {
         super.onPause();
 
+        //Make sure to pause the location updates
         if(locationManager != null) {
             try {
                 locationManager.removeUpdates(this);
@@ -111,6 +116,7 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     {
         super.onResume();
 
+        //Resume getting the location
         if(locationManager != null && location == null) {
             try {
                 locationManager.requestLocationUpdates(locationProvider, 400, 1, this);
@@ -133,10 +139,11 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
 
     @Override
     public void onLocationChanged(Location location) {
+        //If the location changes, update it then stop looking for updates
+        // This should save some battery life instead of tracking the location of the group
         try {
             this.location = location;
             locationManager.removeUpdates(this);
-            Toast.makeText(getApplicationContext(), "Location found!", Toast.LENGTH_SHORT).show();
         } catch (SecurityException ex) {
             Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
         } catch (IllegalArgumentException ex) {
@@ -146,10 +153,8 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     }
 
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            String permissions[],
-            int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        //Handle the permissions
         switch (requestCode) {
             case REQUEST_PERMISSION_LOCATION:
                 if (grantResults.length > 0
@@ -165,10 +170,12 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     }
 
     public void initializeLocationManager() {
+        //Call upon the location services
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteriaForLocationService = new Criteria();
         criteriaForLocationService.setAccuracy(Criteria.ACCURACY_FINE);
 
+        //Select the first available provider
         List<String> providers = locationManager.getProviders(criteriaForLocationService, true);
         String provider = "";
         if(providers.size() > 0) {
@@ -178,6 +185,7 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
         locationProvider = provider;
 
         try {
+            //Search for those updates!
             locationManager.requestLocationUpdates(locationProvider, 400, 1, this);
             location = locationManager.getLastKnownLocation(locationProvider);
 

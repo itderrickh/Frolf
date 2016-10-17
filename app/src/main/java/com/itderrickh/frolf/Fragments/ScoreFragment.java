@@ -70,6 +70,7 @@ public class ScoreFragment extends Fragment {
         final ImageButton minus = (ImageButton) getView().findViewById(R.id.subtractButton);
         final EditText scoreField = (EditText) getView().findViewById(R.id.scoreField);
 
+        //Handle the previous click
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +86,7 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        //Handle the next click
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +102,7 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        //Handle adding to the score
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +114,7 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        //Handle subtracting the score
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +125,8 @@ public class ScoreFragment extends Fragment {
                 scoreField.setText(value + "");
             }
         });
+
+        //Set the hole number
         holeNum.setText("Hole " + (holeNumber + 1));
     }
 

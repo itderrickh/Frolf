@@ -36,8 +36,11 @@ public class JoinGroupActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ListView groupList = (ListView) findViewById(R.id.groupList);
 
+        //Get the auth token
         SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
+
+        //Make a call to get the groups near us
         GroupService.getInstance().getGroupsNearMe(token, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -48,6 +51,7 @@ public class JoinGroupActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String data = response.body().string();
 
+                //TODO: handle groups that are far away client side
                 try {
                     final ArrayList<Group> groups = new ArrayList<>();
                     Group groupRow;
@@ -65,6 +69,7 @@ public class JoinGroupActivity extends AppCompatActivity {
                         groups.add(groupRow);
                     }
 
+                    //We should setup the list, click, and progress bar on the UI thread after getting groups
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -75,6 +80,8 @@ public class JoinGroupActivity extends AppCompatActivity {
                                 @Override
                                 public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                                     final int groupId = groups.get(arg2).getId();
+
+                                    //Call service to join group
                                     GroupService.getInstance().joinGroup(token, groupId, new Callback() {
                                         @Override
                                         public void onFailure(Call call, IOException e) {
