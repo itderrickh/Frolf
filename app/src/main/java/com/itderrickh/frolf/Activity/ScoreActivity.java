@@ -1,5 +1,7 @@
 package com.itderrickh.frolf.Activity;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +10,15 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.itderrickh.frolf.Fragments.ScoreFragment;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.ScoreService;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -34,8 +33,8 @@ public class ScoreActivity extends AppCompatActivity {
     private String token;
     private HashMap<Integer, Score> scores;
     private ArrayList<Integer> scoreIds;
-    private Integer currentScore;
-    private int holeIndex = 0;
+    private boolean firstReceive = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,56 +85,20 @@ public class ScoreActivity extends AppCompatActivity {
                         fillRowsWithScores(row, column, (i % 18) + 1);
                     }
 
-                    if(scoreIds.size() > 0) {
-                        currentScore = scoreIds.get(0);
+                    if(scoreIds.size() > 0 && firstReceive) {
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        ScoreFragment scoreFragment = ScoreFragment.newInstance(scores.get(scoreIds.get(0)), 0, scores, scoreIds);
+                        fragmentTransaction.add(R.id.fragment_container, scoreFragment, "SCORE");
+                        fragmentTransaction.commit();
+                        firstReceive = false;
                     }
                 } catch (Exception ex) {
                     //Handle exception here
+                    ex.printStackTrace();
                 }
             }
         };
-
-        final ImageButton prev = (ImageButton) findViewById(R.id.prevButton);
-        final ImageButton next = (ImageButton) findViewById(R.id.nextButton);
-        final ImageButton plus = (ImageButton) findViewById(R.id.addButton);
-        final ImageButton minus = (ImageButton) findViewById(R.id.subtractButton);
-        final EditText scoreField = (EditText) findViewById(R.id.scoreField);
-        final TextView holeNum = (TextView) findViewById(R.id.holeNum);
-        holeNum.setText("Hole " + (holeIndex + 1));
-
-        prev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holeIndex--;
-                holeNum.setText("Hole " + (holeIndex + 1));
-            }
-        });
-
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holeIndex++;
-                holeNum.setText("Hole " + (holeIndex + 1));
-            }
-        });
-
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Integer.parseInt(scoreField.getText().toString());
-                value++;
-                scoreField.setText(value + "");
-            }
-        });
-
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Integer.parseInt(scoreField.getText().toString());
-                value--;
-                scoreField.setText(value + "");
-            }
-        });
     }
 
     private void fillRowsWithScores(JSONObject row, int colNum, int rowNum) {

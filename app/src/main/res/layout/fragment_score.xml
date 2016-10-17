@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.itderrickh.frolf.Fragments.ScoreFragment">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/scoreField"
+        style="?android:attr/borderlessButtonStyle"
+        android:textAlignment="center"
+        android:text="0"
+        android:textSize="24dp"
+        android:layout_alignTop="@+id/prevButton"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/prevButton"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_navigate_before"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nextButton"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_navigate_next"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addButton"
+        android:src="@drawable/ic_add"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_above="@+id/scoreField"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subtractButton"
+        android:src="@drawable/ic_remove"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_below="@+id/scoreField"
+        android:layout_alignLeft="@+id/addButton"
+        android:layout_alignStart="@+id/addButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/holeNum"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Hole X"
+        android:textSize="24dp" />
+
+</RelativeLayout>

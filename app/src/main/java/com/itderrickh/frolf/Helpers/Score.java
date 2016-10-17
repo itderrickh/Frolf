@@ -1,6 +1,8 @@
 package com.itderrickh.frolf.Helpers;
 
-public class Score {
+import java.io.Serializable;
+
+public class Score implements Serializable {
     private int value;
     private int id;
     private int userId;
