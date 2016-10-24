@@ -66,6 +66,7 @@ public class ScoreActivity extends AppCompatActivity {
                     JSONObject row;
                     int column = 0;
                     String userRow;
+                    scoreIds.clear();
                     //Setup objects on the result
                     for (int i = 0; i < result.length(); i++) {
                         row = result.getJSONObject(i);
@@ -96,7 +97,7 @@ public class ScoreActivity extends AppCompatActivity {
                     if(scoreIds.size() > 0 && firstReceive && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        ScoreFragment scoreFragment = ScoreFragment.newInstance(scores.get(scoreIds.get(0)), 0, scores, scoreIds);
+                        ScoreFragment scoreFragment = ScoreFragment.newInstance(0, scores, scoreIds);
                         fragmentTransaction.add(R.id.fragment_container, scoreFragment, "SCORE");
                         fragmentTransaction.commit();
                         firstReceive = false;
