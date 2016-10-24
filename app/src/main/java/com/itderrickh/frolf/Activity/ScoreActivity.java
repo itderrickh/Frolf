@@ -93,7 +93,7 @@ public class ScoreActivity extends AppCompatActivity {
                     }
 
                     //Handle showing the score fragment on data reception
-                    if(scoreIds.size() > 0 && firstReceive) {
+                    if(scoreIds.size() > 0 && firstReceive && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         ScoreFragment scoreFragment = ScoreFragment.newInstance(scores.get(scoreIds.get(0)), 0, scores, scoreIds);
