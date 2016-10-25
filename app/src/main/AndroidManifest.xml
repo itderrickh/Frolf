@@ -29,17 +29,29 @@
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.CreateGroupActivity" />
-        <activity android:name=".Activity.ScoreActivity" />
-        <activity android:name=".Activity.JoinGroupActivity" />
+        <activity
+            android:name=".Activity.CreateGroupActivity"
+            android:label="@string/create_group" />
+        <activity
+            android:name=".Activity.ScoreActivity"
+            android:label="@string/scores" />
+        <activity
+            android:name=".Activity.JoinGroupActivity"
+            android:label="@string/join_group"/>
+        <activity
+            android:name=".Activity.FriendsActivity"
+            android:label="@string/friends"/>
+        <activity
+            android:name=".Activity.SettingsActivity"
+            android:label="@string/action_settings" />
+        <activity
+            android:name=".Activity.StatisticsActivity"
+            android:label="@string/statistics" />
 
         <service
             android:name=".Services.ScoreService"
             android:enabled="true"
             android:exported="false" />
-
-        <activity android:name=".Activity.FriendsActivity" />
-        <activity android:name=".Activity.SettingsActivity"></activity>
     </application>
 
 </manifest>

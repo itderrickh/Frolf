@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity
             Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(settings);
         } else if (id == R.id.action_statistics) {
-
+            Intent statistics = new Intent(getApplicationContext(), StatisticsActivity.class);
+            startActivity(statistics);
         }
 
         return super.onOptionsItemSelected(item);

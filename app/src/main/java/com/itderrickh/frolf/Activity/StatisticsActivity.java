@@ -6,12 +6,13 @@ import android.view.MenuItem;
 
 import com.itderrickh.frolf.R;
 
-public class SettingsActivity extends AppCompatActivity {
+
+public class StatisticsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_statistics);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
