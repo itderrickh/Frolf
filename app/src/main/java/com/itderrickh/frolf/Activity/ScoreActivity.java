@@ -98,7 +98,7 @@ public class ScoreActivity extends AppCompatActivity {
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         ScoreFragment scoreFragment = ScoreFragment.newInstance(0, scores, scoreIds);
-                        fragmentTransaction.add(R.id.fragment_container, scoreFragment, "SCORE");
+                        fragmentTransaction.replace(R.id.fragment_container, scoreFragment, "SCORE");
                         fragmentTransaction.commit();
                         firstReceive = false;
                     }

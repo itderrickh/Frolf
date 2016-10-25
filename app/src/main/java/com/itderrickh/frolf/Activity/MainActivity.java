@@ -80,7 +80,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(settings);
+        } else if (id == R.id.action_statistics) {
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -108,6 +111,9 @@ public class MainActivity extends AppCompatActivity
             //Start the join group page
             Intent joinGroup = new Intent(getApplicationContext(), JoinGroupActivity.class);
             startActivity(joinGroup);
+        } else if (id == R.id.nav_friends) {
+            Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+            startActivity(friends);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -36,7 +36,10 @@
         <service
             android:name=".Services.ScoreService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".Activity.FriendsActivity" />
+        <activity android:name=".Activity.SettingsActivity"></activity>
     </application>
 
 </manifest>

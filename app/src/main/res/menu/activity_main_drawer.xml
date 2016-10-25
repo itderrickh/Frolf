@@ -10,6 +10,10 @@
             android:id="@+id/nav_joingroup"
             android:icon="@drawable/ic_person_pin_circle"
             android:title="@string/join_group" />
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_person_black"
+            android:title="Friends" />
     </group>
 
     <item android:title="Account">
