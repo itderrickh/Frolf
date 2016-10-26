@@ -37,7 +37,19 @@ public class ScoreActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get our preferences for auth and email
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        int appColor = preferences.getInt("AppColor", R.style.AppTheme);
+        setTheme(appColor);
+
         super.onCreate(savedInstanceState);
+
+        int hole = 0;
+        if(savedInstanceState != null) {
+            hole = savedInstanceState.getInt("holeNumber");
+        }
+
+        final int holeNumber = hole;
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_score_land);
@@ -47,7 +59,6 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
         //Get the email for the user
-        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String userEmail = preferences.getString("Email", "");
 
         scoreIds = new ArrayList<Integer>();
@@ -97,7 +108,7 @@ public class ScoreActivity extends AppCompatActivity {
                     if(scoreIds.size() > 0 && firstReceive && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        ScoreFragment scoreFragment = ScoreFragment.newInstance(0, scores, scoreIds);
+                        ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds, new ArrayList<Integer>());
                         fragmentTransaction.replace(R.id.fragment_container, scoreFragment, "SCORE");
                         fragmentTransaction.commit();
                         firstReceive = false;
@@ -108,6 +119,16 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        ScoreFragment scoreFragment = (ScoreFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+        outState.putInt("holeNumber", scoreFragment.holeNumber);
     }
 
     private void fillRowsWithScores(JSONObject row, int colNum, int rowNum) {

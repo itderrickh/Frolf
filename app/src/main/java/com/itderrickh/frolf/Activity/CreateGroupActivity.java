@@ -39,6 +39,11 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
     private final int REQUEST_PERMISSION_LOCATION = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get our preferences for auth and email
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        int appColor = preferences.getInt("AppColor", R.style.AppTheme);
+        setTheme(appColor);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,7 +58,6 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
         }
 
         //Get the shared pref for auth token
-        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
 
         //Set up the submit to create a group

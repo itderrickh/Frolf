@@ -31,6 +31,11 @@ public class JoinGroupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get our preferences for auth and email
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        int appColor = preferences.getInt("AppColor", R.style.AppTheme);
+        setTheme(appColor);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,7 +44,6 @@ public class JoinGroupActivity extends AppCompatActivity {
         final ListView groupList = (ListView) findViewById(R.id.groupList);
 
         //Get the auth token
-        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = preferences.getString("Auth_Token", "");
 
         //Make a call to get the groups near us

@@ -27,20 +27,22 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ScoreFragment extends Fragment {
-    private int holeNumber;
+    public int holeNumber;
     private ArrayList<Integer> scoreIds;
     private HashMap<Integer, Score> scores;
+    private ArrayList<Integer> upToDateScores = new ArrayList<>();
 
     public ScoreFragment() {
         // Required empty public constructor
     }
 
-    public static ScoreFragment newInstance(int holeNumber, HashMap<Integer, Score> scores, ArrayList<Integer> scoreIds) {
+    public static ScoreFragment newInstance(int holeNumber, HashMap<Integer, Score> scores, ArrayList<Integer> scoreIds, ArrayList<Integer> upToDateScores) {
         ScoreFragment fragment = new ScoreFragment();
         Bundle args = new Bundle();
         args.putInt("holeNumber", holeNumber);
         args.putSerializable("scores", scores);
         args.putSerializable("scoreIds", scoreIds);
+        args.putSerializable("upToDateScores", upToDateScores);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +54,13 @@ public class ScoreFragment extends Fragment {
             holeNumber = getArguments().getInt("holeNumber");
             scores = (HashMap<Integer, Score>)getArguments().getSerializable("scores");
             scoreIds = (ArrayList<Integer>)getArguments().getSerializable("scoreIds");
+            upToDateScores = (ArrayList<Integer>)getArguments().getSerializable("upToDateScores");
+
+            if(upToDateScores.size() == 0) {
+                for(Integer key : scoreIds) {
+                    upToDateScores.add(scores.get(key).getValue());
+                }
+            }
         }
     }
 
@@ -80,16 +89,31 @@ public class ScoreFragment extends Fragment {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holeNumber--;
+                if(holeNumber >= 1) {
+                    holeNumber--;
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds);
-                fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
-                fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
-                fragmentTransaction.commit();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds, upToDateScores);
+                    fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
+                    fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
+                    fragmentTransaction.commit();
 
-                //Save the score async
+                    int newScore = Integer.parseInt(scoreField.getText().toString());
+
+                    //Save the score async
+                    GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber + 1)).getId(), newScore, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            //Handle error
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            //Do nothing we updated successfully
+                        }
+                    });
+                }
             }
         });
 
@@ -97,28 +121,31 @@ public class ScoreFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holeNumber++;
+                if(holeNumber < 17) {
+                    holeNumber++;
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds);
-                fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
-                fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
-                //fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds, upToDateScores);
+                    fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
+                    fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
+                    fragmentTransaction.commit();
 
-                //Save the score async
-                GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getValue(), scores.get(scoreIds.get(holeNumber)).getId(), new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        //Handle error
-                    }
+                    int newScore = Integer.parseInt(scoreField.getText().toString());
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        //Do nothing we updated successfully
-                    }
-                });
+                    //Save the score async
+                    GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber - 1)).getId(), newScore, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            //Handle error
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            //Do nothing we updated successfully
+                        }
+                    });
+                }
             }
         });
 
@@ -128,7 +155,8 @@ public class ScoreFragment extends Fragment {
             public void onClick(View v) {
                 int value = Integer.parseInt(scoreField.getText().toString());
                 value++;
-                scores.get(scoreIds.get(holeNumber)).setValue(value);
+                upToDateScores.set(holeNumber, value);
+
                 scoreField.setText(value + "");
             }
         });
@@ -139,13 +167,14 @@ public class ScoreFragment extends Fragment {
             public void onClick(View v) {
                 int value = Integer.parseInt(scoreField.getText().toString());
                 value--;
-                scores.get(scoreIds.get(holeNumber)).setValue(value);
+                upToDateScores.set(holeNumber, value);
+
                 scoreField.setText(value + "");
             }
         });
 
         //Set the hole number
-        scoreField.setText(scores.get(scoreIds.get(holeNumber)).getValue() + "");
+        scoreField.setText(upToDateScores.get(holeNumber) + "");
         holeNum.setText("Hole " + (holeNumber + 1));
     }
 }
