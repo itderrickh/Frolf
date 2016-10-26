@@ -37,10 +37,10 @@
             android:label="@string/scores" />
         <activity
             android:name=".Activity.JoinGroupActivity"
-            android:label="@string/join_group"/>
+            android:label="@string/join_group" />
         <activity
             android:name=".Activity.FriendsActivity"
-            android:label="@string/friends"/>
+            android:label="@string/friends" />
         <activity
             android:name=".Activity.SettingsActivity"
             android:label="@string/action_settings" />
@@ -52,6 +52,8 @@
             android:name=".Services.ScoreService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity android:name=".Activity.AddFriendsActivity"></activity>
     </application>
 
 </manifest>

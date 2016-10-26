@@ -22,6 +22,7 @@ public class GroupService {
     private static final String GET_GROUPS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getGroups.php";
     private static final String JOIN_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/joinGroup.php";
     private static final String UPDATE_SCORE_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/updateScore.php";
+    private static final String GET_GROUPMATES_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getRecentGroupmates.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
@@ -112,6 +113,22 @@ public class GroupService {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(UPDATE_SCORE_URL)
+                .addHeader("Authorize", token)
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call getRecentGroupmates(String token, Callback callback) {
+        JSONObject jsonBuilder = new JSONObject();
+        String json = "{}";
+
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(GET_GROUPMATES_URL)
                 .addHeader("Authorize", token)
                 .post(body)
                 .build();

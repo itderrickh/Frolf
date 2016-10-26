@@ -118,6 +118,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_friends) {
             Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
             startActivity(friends);
+        } else if (id == R.id.nav_add_friends) {
+            Intent addFriends = new Intent(getApplicationContext(), AddFriendsActivity.class);
+            startActivity(addFriends);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
