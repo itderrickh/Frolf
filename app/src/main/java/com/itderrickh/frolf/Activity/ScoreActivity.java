@@ -11,9 +11,12 @@ import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itderrickh.frolf.Fragments.ScoreFragment;
+import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.ScoreService;

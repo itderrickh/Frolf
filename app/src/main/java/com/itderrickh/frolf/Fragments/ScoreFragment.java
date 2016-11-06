@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itderrickh.frolf.Activity.ScoreActivity;
+import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.GroupService;
@@ -31,6 +33,11 @@ public class ScoreFragment extends Fragment {
     private ArrayList<Integer> scoreIds;
     private HashMap<Integer, Score> scores;
     private ArrayList<Integer> upToDateScores = new ArrayList<>();
+    private EditText scoreField;
+    private String token;
+    private FragmentManager fragmentManager;
+    private ScoreFragment previousFragment = null;
+    private ScoreFragment nextFragment = null;
 
     public ScoreFragment() {
         // Required empty public constructor
@@ -79,41 +86,32 @@ public class ScoreFragment extends Fragment {
         final ImageButton next = (ImageButton) getView().findViewById(R.id.nextButton);
         final ImageButton plus = (ImageButton) getView().findViewById(R.id.addButton);
         final ImageButton minus = (ImageButton) getView().findViewById(R.id.subtractButton);
-        final EditText scoreField = (EditText) getView().findViewById(R.id.scoreField);
+        scoreField = (EditText) getView().findViewById(R.id.scoreField);
+        fragmentManager = getFragmentManager();
+
+        //Setup previous hole like a linked list
+        if(holeNumber >= 1) {
+            previousFragment = ScoreFragment.newInstance(holeNumber - 1, scores, scoreIds, upToDateScores);
+        } else {
+            previousFragment = null;
+        }
+
+        //Setup next hole like a linked list
+        if(holeNumber < 17) {
+            nextFragment = ScoreFragment.newInstance(holeNumber + 1, scores, scoreIds, upToDateScores);
+        } else {
+            nextFragment = null;
+        }
 
         //Get our preferences for auth and email
         SharedPreferences preferences = getActivity().getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
-        final String token = preferences.getString("Auth_Token", "");
+        token = preferences.getString("Auth_Token", "");
 
         //Handle the previous click
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holeNumber >= 1) {
-                    holeNumber--;
-
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds, upToDateScores);
-                    fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
-                    fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
-                    fragmentTransaction.commit();
-
-                    int newScore = Integer.parseInt(scoreField.getText().toString());
-
-                    //Save the score async
-                    GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber + 1)).getId(), newScore, new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            //Handle error
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            //Do nothing we updated successfully
-                        }
-                    });
-                }
+                previousHole();
             }
         });
 
@@ -121,31 +119,17 @@ public class ScoreFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holeNumber < 17) {
-                    holeNumber++;
+                nextHole();
+            }
+        });
 
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    ScoreFragment scoreFragment = ScoreFragment.newInstance(holeNumber, scores, scoreIds, upToDateScores);
-                    fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
-                    fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
-                    fragmentTransaction.commit();
+        getView().setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeRight() {
+                previousHole();
+            }
 
-                    int newScore = Integer.parseInt(scoreField.getText().toString());
-
-                    //Save the score async
-                    GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber - 1)).getId(), newScore, new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            //Handle error
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            //Do nothing we updated successfully
-                        }
-                    });
-                }
+            public void onSwipeLeft() {
+                nextHole();
             }
         });
 
@@ -176,5 +160,53 @@ public class ScoreFragment extends Fragment {
         //Set the hole number
         scoreField.setText(upToDateScores.get(holeNumber) + "");
         holeNum.setText("Hole " + (holeNumber + 1));
+    }
+
+    private void nextHole() {
+        if(nextFragment != null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
+            fragmentTransaction.replace(R.id.fragment_container, nextFragment);
+            fragmentTransaction.commit();
+
+            int newScore = Integer.parseInt(scoreField.getText().toString());
+
+            //Save the score async
+            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber - 1)).getId(), newScore, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    //Handle error
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    //Do nothing we updated successfully
+                }
+            });
+        }
+    }
+
+    private void previousHole() {
+        if(previousFragment != null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
+            fragmentTransaction.replace(R.id.fragment_container, previousFragment);
+            fragmentTransaction.commit();
+
+            int newScore = Integer.parseInt(scoreField.getText().toString());
+
+            //Save the score async
+            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber + 1)).getId(), newScore, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    //Handle error
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    //Do nothing we updated successfully
+                }
+            });
+        }
     }
 }
