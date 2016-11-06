@@ -39,7 +39,7 @@ public class AddFriendsActivity extends AppCompatActivity {
         GroupService.getInstance().getRecentGroupmates(token, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //Handle failure
+                e.printStackTrace();
             }
 
             @Override
@@ -53,7 +53,11 @@ public class AddFriendsActivity extends AppCompatActivity {
                     //Setup objects on the result
                     for (int i = 0; i < result.length(); i++) {
                         row = result.getJSONObject(i);
-                        groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email")));
+                        if(row.isNull("friendid")) {
+                            groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email"), null));
+                        } else {
+                            groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email"), (Integer)row.get("friendid")));
+                        }
                     }
 
                     runOnUiThread(new Runnable() {
@@ -64,7 +68,7 @@ public class AddFriendsActivity extends AppCompatActivity {
                         }
                     });
                 } catch (Exception ex) {
-                    //Handle exception here
+                    ex.printStackTrace();
                 }
             }
         });

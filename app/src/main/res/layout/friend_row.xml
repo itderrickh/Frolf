@@ -10,15 +10,10 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:textSize="16dp"
-        android:id="@+id/userEmail"/>
-    <LinearLayout
+        android:id="@+id/friendEmail" />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/addArea">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
-            android:id="@+id/addFriendButton"/>
-    </LinearLayout>
+        android:id="@+id/friendDate"
+        android:textSize="16dp" />
 </LinearLayout>
