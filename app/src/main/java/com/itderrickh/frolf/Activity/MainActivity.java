@@ -15,9 +15,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.itderrickh.frolf.Helpers.AddFriendAdapter;
+import com.itderrickh.frolf.Helpers.FrontPageAdapter;
+import com.itderrickh.frolf.Helpers.FrontPageItem;
+import com.itderrickh.frolf.Helpers.GroupUser;
 import com.itderrickh.frolf.R;
+import com.itderrickh.frolf.Services.FriendService;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,6 +73,44 @@ public class MainActivity extends AppCompatActivity
         //Set the email in the drawer
         emailView.setText(email);
         userView.setText("");
+        final ListView frontPageList = (ListView) findViewById(R.id.frontPageInfo);
+
+        FriendService.getInstance().getFrontPageStats(token, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //handle failure
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final ArrayList<FrontPageItem> frontPageItems = new ArrayList<FrontPageItem>();
+                    String data = response.body().string();
+                    JSONArray result = new JSONArray(data);
+                    JSONObject row;
+                    //Setup objects on the result
+                    for (int i = 0; i < result.length(); i++) {
+                        row = result.getJSONObject(i);
+
+                        String dateRow = row.getString("datescored");
+
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date inputDate = dateFormat.parse(dateRow);
+                        frontPageItems.add(new FrontPageItem(row.getInt("id"), inputDate, row.getString("groupname"), row.getInt("score"), row.getInt("par"), row.getInt("holes"), row.getString("email")));
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            FrontPageAdapter adapter = new FrontPageAdapter(getApplicationContext(), R.id.frontPageInfo, frontPageItems);
+                            frontPageList.setAdapter(adapter);
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
