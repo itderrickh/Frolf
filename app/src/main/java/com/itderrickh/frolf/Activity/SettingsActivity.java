@@ -1,11 +1,16 @@
 package com.itderrickh.frolf.Activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
     private String directory;
     private String imageUUID;
     private int TAKE_PHOTO_CODE = 0;
+    private static final int MY_REQUEST_CODE = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,43 @@ public class SettingsActivity extends AppCompatActivity {
         File newdir = new File(directory);
         newdir.mkdirs();
 
+        // Check permission for CAMERA
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Check Permissions Now
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    MY_REQUEST_CODE);
+        } else {
+            // permission has been granted, continue as usual
+            setupSnapPictureClick();
+        }
+
+        setupColorClicks();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    setupSnapPictureClick();
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
+
+    public void setupSnapPictureClick() {
         snapPicture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 UUID id = UUID.randomUUID();
@@ -88,8 +131,6 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
             }
         });
-
-        setupColorClicks();
     }
 
     public void setupColorClicks() {
@@ -161,7 +202,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //profileImage.setImageURI(new Uri.Builder().);
         String file = directory + imageUUID + ".jpg";
         File fileToUpload = new File(file);
         String token = sharedPreferences.getString("Auth_Token", "");
@@ -175,6 +215,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //DO something here
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        profileImage.setImageURI(Uri.parse("http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/uploads/" + imageUUID + ".jpg" ));
+                    }
+                });
             }
         });
 
