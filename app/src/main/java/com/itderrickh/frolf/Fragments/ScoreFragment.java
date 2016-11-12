@@ -172,7 +172,7 @@ public class ScoreFragment extends Fragment {
             int newScore = Integer.parseInt(scoreField.getText().toString());
 
             //Save the score async
-            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber - 1)).getId(), newScore, new Callback() {
+            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     //Handle error
@@ -196,7 +196,7 @@ public class ScoreFragment extends Fragment {
             int newScore = Integer.parseInt(scoreField.getText().toString());
 
             //Save the score async
-            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber + 1)).getId(), newScore, new Callback() {
+            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     //Handle error

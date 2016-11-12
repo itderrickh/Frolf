@@ -181,22 +181,31 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
 
         //Select the first available provider
         List<String> providers = locationManager.getProviders(criteriaForLocationService, true);
-        String provider = "";
-        if(providers.size() > 0) {
-            provider = providers.get(0);
-        }
-
-        locationProvider = provider;
+        Location bestLocation = null;
 
         try {
             //Search for those updates!
-            locationManager.requestLocationUpdates(locationProvider, 400, 1, this);
-            location = locationManager.getLastKnownLocation(locationProvider);
+            //locationManager.requestLocationUpdates(locationProvider, 400, 1, this);
+            //location = locationManager.getLastKnownLocation(locationProvider);
+
+            for (String provider : providers) {
+                Location l = locationManager.getLastKnownLocation(provider);
+                if (l == null) {
+                    continue;
+                }
+                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                    // Found best last known location: %s", l);
+                    bestLocation = l;
+                }
+            }
+            location = bestLocation;
 
             //Kill the location service if we grabbed their location already.
             if(location != null) {
                 locationManager.removeUpdates(this);
             }
+
+
         } catch (SecurityException ex) {
             Toast.makeText(getApplicationContext(), "Location disabled, please enable", Toast.LENGTH_SHORT).show();
         } catch (IllegalArgumentException ex) {

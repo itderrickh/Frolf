@@ -1,5 +1,6 @@
 package com.itderrickh.frolf.Activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -10,13 +11,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.itderrickh.frolf.Fragments.ScoreFragment;
-import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
+import com.itderrickh.frolf.Fragments.ScoreRowFragment;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.ScoreService;
@@ -24,7 +21,6 @@ import com.itderrickh.frolf.Services.ScoreService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,6 +32,7 @@ public class ScoreActivity extends AppCompatActivity {
     private String token;
     private HashMap<Integer, Score> scores;
     private ArrayList<Integer> scoreIds;
+    private HashMap<String, ScoreRowFragment> scoreRows;
     private boolean firstReceive = true;
 
     @Override
@@ -46,6 +43,13 @@ public class ScoreActivity extends AppCompatActivity {
         setTheme(appColor);
 
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            scoreRows = (HashMap<String, ScoreRowFragment>)savedInstanceState.getSerializable("scoreRows");
+        } else {
+            scoreRows = new HashMap<>(10, 0.75f);
+        }
+
 
         int hole = 0;
         if(savedInstanceState != null) {
@@ -78,33 +82,41 @@ public class ScoreActivity extends AppCompatActivity {
                     String data = intent.getStringExtra("data");
                     JSONArray result = new JSONArray(data);
                     JSONObject row;
-                    int column = 0;
-                    String userRow;
                     scoreIds.clear();
+
                     //Setup objects on the result
-                    for (int i = 0; i < result.length(); i++) {
-                        row = result.getJSONObject(i);
-                        String email = row.getString("email");
+                    for (int i = 0; i < result.length();) {
+                        ArrayList<Score> userScores = new ArrayList<>();
+                        String email = "";
+                        for(int c = i; c < i + 18; c++) {
+                            row = result.getJSONObject(c);
+                            email = row.getString("email");
 
-                        //Only keep scores for the current user
-                        if(userEmail.equals(email)) {
-                            scoreIds.add(row.getInt("id"));
-                            scores.put(row.getInt("id"), new Score(row.getInt("id"), row.getInt("value"), row.getInt("user"), row.getInt("holeNum"), groupId));
+                            Score rowScore = new Score(row.getInt("id"), row.getInt("value"), row.getInt("user"), row.getInt("holeNum"), groupId);
+                            if(userEmail.equals(email)) {
+                                scoreIds.add(row.getInt("id"));
+                                scores.put(row.getInt("id"), rowScore);
+                            }
+
+                            userScores.add(rowScore);
                         }
 
-                        //Handle logic for each row
-                        if(i % 18 == 0) {
-                            column++;
-                            userRow = "user" + column;
-                            TextView updateView = (TextView) findViewById(getResId(userRow, R.id.class));
-                            try {
+                        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            FragmentManager fragmentManager = getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                                updateView.setText(email);
-                            } catch(Exception e) { }
+                            if(scoreRows.containsKey(email)) {
+                                scoreRows.get(email).updateScores(userScores);
+                            } else {
+                                ScoreRowFragment srf = ScoreRowFragment.newInstance(userScores, email);
+                                scoreRows.put(email, srf);
+                                fragmentTransaction.add(R.id.scoreTarget, srf, "SCORE_ROW" + email);
+                            }
+
+                            fragmentTransaction.commit();
                         }
 
-                        //Show the correct scores in each row
-                        fillRowsWithScores(row, column, (i % 18) + 1);
+                        i += 18;
                     }
 
                     //Handle showing the score fragment on data reception
@@ -132,24 +144,7 @@ public class ScoreActivity extends AppCompatActivity {
 
         ScoreFragment scoreFragment = (ScoreFragment) fragmentManager.findFragmentById(R.id.fragment_container);
         outState.putInt("holeNumber", scoreFragment.holeNumber);
-    }
-
-    private void fillRowsWithScores(JSONObject row, int colNum, int rowNum) {
-        String viewName = "score" + colNum + String.format("%02d", rowNum);
-        TextView updateView = (TextView) findViewById(getResId(viewName, R.id.class));
-        try {
-            updateView.setText(row.getString("value"));
-        } catch(Exception e) { }
-    }
-
-    private int getResId(String resName, Class<?> c) {
-        try {
-            Field idField = c.getDeclaredField(resName);
-            return idField.getInt(idField);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
+        outState.putSerializable("scoreRows", scoreRows);
     }
 
     @Override
