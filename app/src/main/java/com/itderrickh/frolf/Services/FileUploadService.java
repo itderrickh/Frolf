@@ -3,6 +3,7 @@ package com.itderrickh.frolf.Services;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,9 +22,8 @@ import okhttp3.Response;
 public class FileUploadService {
     private static FileUploadService me;
     private static OkHttpClient client;
-    private static final String UPLOAD_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/addImage.php";
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final MediaType MULTIPART_FORM = MediaType.parse("text/plain");
+    private static final String UPLOAD_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/upload.php";
+    public static final MediaType MULTIPART_FORM = MediaType.parse("application/x-www-form-urlencoded");
 
     private FileUploadService() { }
 

@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -44,6 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageView profileImage;
 
     private String profileImageURL;
+    private File newfile;
 
     private SharedPreferences sharedPreferences;
     private String directory;
@@ -90,6 +95,14 @@ public class SettingsActivity extends AppCompatActivity {
         setupColorClicks();
     }
 
+    public void setButtonTint(Button button, ColorStateList tint) {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && button instanceof AppCompatButton) {
+            ((AppCompatButton) button).setSupportBackgroundTintList(tint);
+        } else {
+            ViewCompat.setBackgroundTintList(button, tint);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -117,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
                 UUID id = UUID.randomUUID();
                 imageUUID = id.toString();
                 String file = directory + imageUUID + ".jpg";
-                File newfile = new File(file);
+                newfile = new File(file);
                 try {
                     newfile.createNewFile();
                 }
@@ -140,6 +153,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppTheme, R.style.AppTheme_NoActionBar);
             }
         });
+        AppCompatButton v = (AppCompatButton) buttonRed;
+        ColorStateList csl = ColorStateList.valueOf(0xffA52422);
+        v.setSupportBackgroundTintList(csl);
 
         buttonOrange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +163,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppOrangeTheme, R.style.AppOrangeTheme_NoActionBar);
             }
         });
+        v = (AppCompatButton) buttonOrange;
+        csl = ColorStateList.valueOf(0xffFF7E0B);
+        v.setSupportBackgroundTintList(csl);
 
         buttonYellow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +173,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppYellowTheme, R.style.AppYellowTheme_NoActionBar);
             }
         });
+        v = (AppCompatButton) buttonYellow;
+        csl = ColorStateList.valueOf(0xffD8D800);
+        v.setSupportBackgroundTintList(csl);
 
         buttonGreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +183,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppGreenTheme, R.style.AppGreenTheme_NoActionBar);
             }
         });
+        v = (AppCompatButton) buttonGreen;
+        csl = ColorStateList.valueOf(0xff007700);
+        v.setSupportBackgroundTintList(csl);
 
         buttonBlue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +193,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppBlueTheme, R.style.AppBlueTheme_NoActionBar);
             }
         });
+        v = (AppCompatButton) buttonBlue;
+        csl = ColorStateList.valueOf(0xff1C47BB);
+        v.setSupportBackgroundTintList(csl);
 
         buttonPurple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +203,9 @@ public class SettingsActivity extends AppCompatActivity {
                 recolor(R.style.AppPurpleTheme, R.style.AppPurpleTheme_NoActionBar);
             }
         });
+        v = (AppCompatButton) buttonPurple;
+        csl = ColorStateList.valueOf(0xff6805a6);
+        v.setSupportBackgroundTintList(csl);
     }
 
     public void recolor(int colorTheme, int colorNoBar) {
@@ -203,13 +234,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         String file = directory + imageUUID + ".jpg";
-        File fileToUpload = new File(file);
         String token = sharedPreferences.getString("Auth_Token", "");
 
-        FileUploadService.getInstance().uploadFile(token, fileToUpload, new Callback() {
+        FileUploadService.getInstance().uploadFile(token, newfile, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //Handle exception
+                System.out.println(directory + imageUUID + ".jpg");
             }
 
             @Override
