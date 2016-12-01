@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScoreActivity extends AppCompatActivity {
+public class ScoreActivity extends AppCompatActivity implements ScoreFragment.OnGameFinishedInterface {
 
     BroadcastReceiver receiver;
     Intent serviceIntent;
@@ -134,6 +134,13 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    public void OnGameFinished(ArrayList<Integer> scores) {
+        Intent finishGame = new Intent(getApplicationContext(), GameFinishedActivity.class);
+        finishGame.putExtra("scores", scores);
+        startActivity(finishGame);
     }
 
     @Override

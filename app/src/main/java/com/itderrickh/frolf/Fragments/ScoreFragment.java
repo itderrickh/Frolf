@@ -3,17 +3,20 @@ package com.itderrickh.frolf.Fragments;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itderrickh.frolf.Activity.GameFinishedActivity;
 import com.itderrickh.frolf.Activity.ScoreActivity;
 import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
 import com.itderrickh.frolf.Helpers.Score;
@@ -35,9 +38,11 @@ public class ScoreFragment extends Fragment {
     private ArrayList<Integer> upToDateScores = new ArrayList<>();
     private EditText scoreField;
     private String token;
+    private Button finishGame;
     private FragmentManager fragmentManager;
     private ScoreFragment previousFragment = null;
     private ScoreFragment nextFragment = null;
+    private OnGameFinishedInterface listener;
 
     public ScoreFragment() {
         // Required empty public constructor
@@ -86,8 +91,15 @@ public class ScoreFragment extends Fragment {
         final ImageButton next = (ImageButton) getView().findViewById(R.id.nextButton);
         final ImageButton plus = (ImageButton) getView().findViewById(R.id.addButton);
         final ImageButton minus = (ImageButton) getView().findViewById(R.id.subtractButton);
+        finishGame = (Button) getView().findViewById(R.id.finishGame);
         scoreField = (EditText) getView().findViewById(R.id.scoreField);
         fragmentManager = getFragmentManager();
+
+        if(holeNumber == 17) {
+            finishGame.setVisibility(View.VISIBLE);
+        } else {
+            finishGame.setVisibility(View.GONE);
+        }
 
         //Setup previous hole like a linked list
         if(holeNumber >= 1) {
@@ -157,6 +169,13 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        finishGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.OnGameFinished(upToDateScores);
+            }
+        });
+
         //Set the hole number
         scoreField.setText(upToDateScores.get(holeNumber) + "");
         holeNum.setText("Hole " + (holeNumber + 1));
@@ -208,5 +227,26 @@ public class ScoreFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnGameFinishedInterface) {
+            listener = (OnGameFinishedInterface) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    public interface OnGameFinishedInterface {
+        void OnGameFinished(ArrayList<Integer> scores);
     }
 }

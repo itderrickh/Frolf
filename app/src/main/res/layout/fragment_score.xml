@@ -66,4 +66,13 @@
         android:text="Hole X"
         android:textSize="24dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/finishGame"
+        android:text="Finish Game"/>
+
 </RelativeLayout>
