@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import okhttp3.Response;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private CheckBox receiveNotifications;
     private Button buttonRed;
     private Button buttonOrange;
     private Button buttonYellow;
@@ -76,6 +78,8 @@ public class SettingsActivity extends AppCompatActivity {
         buttonPurple = (Button) findViewById(R.id.buttonPurple);
         snapPicture = (Button) findViewById(R.id.snapPicture);
 
+        receiveNotifications = (CheckBox) findViewById(R.id.receiveNotifications);
+
         directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/frolfImages/";
         File newdir = new File(directory);
         newdir.mkdirs();
@@ -93,6 +97,26 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         setupColorClicks();
+        setupCheckBoxClick();
+    }
+
+    public void setupCheckBoxClick() {
+        receiveNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(receiveNotifications.isChecked()) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("Notifications", true);
+                    editor.apply();
+                } else {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("Notifications", false);
+                    editor.apply();
+                }
+
+                //Do work to start notifications
+            }
+        });
     }
 
     public void setButtonTint(Button button, ColorStateList tint) {
