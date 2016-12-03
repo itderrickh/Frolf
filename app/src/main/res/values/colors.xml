@@ -19,4 +19,5 @@
     <color name="colorPurplePrimaryDark">#4B017A</color>
 
     <color name="colorAccent">#005C69</color>
+    <color name="black">#000000</color>
 </resources>

@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView emailView = (TextView)header.findViewById(R.id.userEmail);
         TextView userView = (TextView)header.findViewById(R.id.userName);
+        final TextView homeEmptyText = (TextView) findViewById(R.id.homeEmptyText);
 
         //Set the email in the drawer
         emailView.setText(email);
@@ -104,6 +105,10 @@ public class MainActivity extends AppCompatActivity
                         public void run() {
                             FrontPageAdapter adapter = new FrontPageAdapter(getApplicationContext(), R.id.frontPageInfo, frontPageItems);
                             frontPageList.setAdapter(adapter);
+
+                            if(frontPageItems.size() >= 1) {
+                                homeEmptyText.setVisibility(View.GONE);
+                            }
                         }
                     });
                 } catch (Exception ex) {

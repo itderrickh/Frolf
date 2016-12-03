@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.itderrickh.frolf.Helpers.Group;
 import com.itderrickh.frolf.Helpers.JoinGroupAdapter;
@@ -42,6 +43,7 @@ public class JoinGroupActivity extends AppCompatActivity {
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ListView groupList = (ListView) findViewById(R.id.groupList);
+        final TextView emptyText = (TextView) findViewById(R.id.joinEmptyText);
 
         //Get the auth token
         final String token = preferences.getString("Auth_Token", "");
@@ -82,6 +84,10 @@ public class JoinGroupActivity extends AppCompatActivity {
                             JoinGroupAdapter adapter = new JoinGroupAdapter(getApplicationContext(), R.layout.group_row, groups);
                             groupList.setAdapter(adapter);
                             progressBar.setVisibility(View.INVISIBLE);
+
+                            if(groups.size() >= 1) {
+                                emptyText.setVisibility(View.GONE);
+                            }
                             groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {

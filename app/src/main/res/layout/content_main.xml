@@ -11,6 +11,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.itderrickh.frolf.Activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/homeEmptyText"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:textSize="16dp"
+        android:text="You currently have no friends, go out and play a game for up to date content!"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
