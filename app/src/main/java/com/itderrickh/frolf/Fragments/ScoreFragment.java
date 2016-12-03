@@ -127,11 +127,31 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        prev.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                previousFragment = ScoreFragment.newInstance(0, scores, scoreIds, upToDateScores);
+                previousHole();
+
+                return true;
+            }
+        });
+
         //Handle the next click
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nextHole();
+            }
+        });
+
+        next.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                nextFragment = ScoreFragment.newInstance(17, scores, scoreIds, upToDateScores);
+                nextHole();
+
+                return true;
             }
         });
 
