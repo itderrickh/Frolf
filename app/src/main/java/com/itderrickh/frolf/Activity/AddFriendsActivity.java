@@ -53,11 +53,7 @@ public class AddFriendsActivity extends AppCompatActivity {
                     //Setup objects on the result
                     for (int i = 0; i < result.length(); i++) {
                         row = result.getJSONObject(i);
-                        if(row.isNull("friendid")) {
-                            groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email"), null));
-                        } else {
-                            groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email"), (Integer)row.get("friendid")));
-                        }
+                        groupUsers.add(new GroupUser(row.getInt("id"), row.getString("email")));
                     }
 
                     runOnUiThread(new Runnable() {

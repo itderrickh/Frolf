@@ -37,30 +37,26 @@ public class AddFriendAdapter extends ArrayAdapter<GroupUser> {
         SharedPreferences prefs = getContext().getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         final String token = prefs.getString("Auth_Token", "");
 
-        if(groupUser.getFriendid() == null) {
-            addButton.setImageResource(R.drawable.ic_add);
+        addButton.setImageResource(R.drawable.ic_add);
 
-            addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Add friend
-                    addButton.setImageResource(R.drawable.ic_done);
-                    FriendService.getInstance().addFriend(token, groupUser.getId(), new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            e.printStackTrace();
-                        }
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Add friend
+                addButton.setImageResource(R.drawable.ic_done);
+                FriendService.getInstance().addFriend(token, groupUser.getId(), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
 
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            //Added
-                        }
-                    });
-                }
-            });
-        } else {
-            addButton.setImageResource(R.drawable.ic_done);
-        }
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        addButton.setImageResource(R.drawable.ic_done);
+                    }
+                });
+            }
+        });
 
         groupUserEmail.setText(groupUser.getEmail());
         return convertView;
