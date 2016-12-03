@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -103,6 +102,7 @@ public class JoinGroupActivity extends AppCompatActivity {
                                         @Override
                                         public void onResponse(Call call, Response response) throws IOException {
                                             Intent score = new Intent(getApplicationContext(), ScoreActivity.class);
+                                            score.putExtra("isLeader", false);
                                             score.putExtra("groupId", groupId);
                                             score.putExtra("token", token);
                                             startActivity(score);

@@ -9,6 +9,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.itderrickh.frolf.Activity.AddFriendsActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addEmptyText"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:textSize="16dp"
+        android:text="There are no recent groupmates, join or create a group to meet new people!"/>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

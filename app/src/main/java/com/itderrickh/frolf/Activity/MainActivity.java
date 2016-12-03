@@ -13,15 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.itderrickh.frolf.Helpers.AddFriendAdapter;
 import com.itderrickh.frolf.Helpers.FrontPageAdapter;
 import com.itderrickh.frolf.Helpers.FrontPageItem;
-import com.itderrickh.frolf.Helpers.GroupUser;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.FriendService;
 

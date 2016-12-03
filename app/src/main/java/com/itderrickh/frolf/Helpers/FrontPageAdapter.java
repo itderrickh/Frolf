@@ -10,11 +10,8 @@ import android.widget.TextView;
 import com.itderrickh.frolf.R;
 
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FrontPageAdapter extends ArrayAdapter<FrontPageItem> {
     public FrontPageAdapter(Context context, int resource, ArrayList<FrontPageItem> objects) {

@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.itderrickh.frolf.Helpers.AddFriendAdapter;
 import com.itderrickh.frolf.Helpers.FriendUser;
 import com.itderrickh.frolf.Helpers.FriendsAdapter;
-import com.itderrickh.frolf.Helpers.GroupUser;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.FriendService;
 
@@ -76,7 +74,9 @@ public class FriendsActivity extends AppCompatActivity {
 
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date inputDate = dateFormat.parse(dateRow);
-                        friendUsers.add(new FriendUser(row.getInt("id"), inputDate, row.getString("email")));
+                        int isPlayingInt = row.getInt("isplaying");
+                        boolean isPlaying = (isPlayingInt == 1) ? true : false;
+                        friendUsers.add(new FriendUser(row.getInt("id"), inputDate, row.getString("email"), isPlaying));
                     }
 
                     runOnUiThread(new Runnable() {
@@ -95,6 +95,7 @@ public class FriendsActivity extends AppCompatActivity {
                     });
                 } catch (Exception ex) {
                     //Handle exception here
+                    ex.printStackTrace();
                 }
             }
         });

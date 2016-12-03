@@ -22,8 +22,6 @@ import android.widget.Toast;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.GroupService;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -80,6 +78,7 @@ public class CreateGroupActivity extends AppCompatActivity implements LocationLi
                         Intent score = new Intent(getApplicationContext(), ScoreActivity.class);
                         score.putExtra("groupId", groupId);
                         score.putExtra("token", token);
+                        score.putExtra("isLeader", true);
                         startActivity(score);
                     }
                 });

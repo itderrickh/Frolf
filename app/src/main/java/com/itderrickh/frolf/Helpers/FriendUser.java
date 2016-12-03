@@ -6,11 +6,13 @@ public class FriendUser {
     private int id;
     private Date dateAdded;
     private String email;
+    private boolean isplaying;
 
-    public FriendUser(int id, Date dateAdded, String email) {
+    public FriendUser(int id, Date dateAdded, String email, boolean isplaying) {
         this.id = id;
         this.dateAdded = dateAdded;
         this.email = email;
+        this.isplaying = isplaying;
     }
 
     public int getId() {
@@ -35,5 +37,13 @@ public class FriendUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isplaying() {
+        return isplaying;
+    }
+
+    public void setIsplaying(boolean isplaying) {
+        this.isplaying = isplaying;
     }
 }

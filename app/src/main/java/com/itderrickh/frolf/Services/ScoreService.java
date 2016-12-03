@@ -1,15 +1,11 @@
 package com.itderrickh.frolf.Services;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.Exchanger;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;

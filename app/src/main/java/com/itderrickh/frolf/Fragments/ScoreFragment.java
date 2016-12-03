@@ -1,9 +1,9 @@
 package com.itderrickh.frolf.Fragments;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -14,10 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.itderrickh.frolf.Activity.GameFinishedActivity;
-import com.itderrickh.frolf.Activity.ScoreActivity;
 import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
@@ -192,7 +189,9 @@ public class ScoreFragment extends Fragment {
         finishGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.OnGameFinished(upToDateScores);
+                if(listener != null) {
+                    listener.OnGameFinished(upToDateScores);
+                }
             }
         });
 
@@ -246,6 +245,17 @@ public class ScoreFragment extends Fragment {
                     //Do nothing we updated successfully
                 }
             });
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnGameFinishedInterface) {
+            listener = (OnGameFinishedInterface) activity;
+        } else {
+            throw new RuntimeException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 

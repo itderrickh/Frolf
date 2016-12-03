@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.itderrickh.frolf.Helpers.AddFriendAdapter;
 import com.itderrickh.frolf.Helpers.GroupUser;
@@ -31,9 +34,12 @@ public class AddFriendsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friends);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Get the shared pref for auth token
         final String token = preferences.getString("Auth_Token", "");
+
+        final TextView emptyText = (TextView) findViewById(R.id.addEmptyText);
 
         final ListView list = (ListView) findViewById(R.id.addFriendsList);
         GroupService.getInstance().getRecentGroupmates(token, new Callback() {
@@ -59,6 +65,10 @@ public class AddFriendsActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if(groupUsers.size() >= 1) {
+                                emptyText.setVisibility(View.GONE);
+                            }
+
                             AddFriendAdapter adapter = new AddFriendAdapter(getApplicationContext(), R.id.addFriendsList, groupUsers);
                             list.setAdapter(adapter);
                         }
@@ -68,5 +78,16 @@ public class AddFriendsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

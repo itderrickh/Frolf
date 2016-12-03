@@ -12,9 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-/**
- * Created by heined50 on 9/26/2016.
- */
 public class GroupService {
     private static GroupService me;
     private static OkHttpClient client;
@@ -23,6 +20,7 @@ public class GroupService {
     private static final String JOIN_GROUP_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/joinGroup.php";
     private static final String UPDATE_SCORE_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/updateScore.php";
     private static final String GET_GROUPMATES_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getRecentGroupmates.php";
+    private static final String FINISH_GAME_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/finishGame.php";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
@@ -91,6 +89,29 @@ public class GroupService {
         Request request = new Request.Builder()
                 .url(GET_GROUPS_URL)
                 .addHeader("Authorize", token)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call finishGame(String token, int groupId, Callback callback) {
+        JSONObject jsonBuilder = new JSONObject();
+        String json = "{}";
+
+        try {
+            jsonBuilder.put("groupId", groupId);
+            json = jsonBuilder.toString();
+        } catch (JSONException ex) {
+            //TODO: handle json exception
+        }
+
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(FINISH_GAME_URL)
+                .addHeader("Authorize", token)
+                .post(body)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);

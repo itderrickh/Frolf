@@ -9,6 +9,7 @@
         android:paddingLeft="5dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:textColor="@color/black"
         android:textSize="16dp"
         android:id="@+id/groupName"/>
     <TextView
@@ -16,6 +17,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:textColor="@color/black"
         android:paddingLeft="5dp"
         android:textSize="16dp"
         android:id="@+id/groupDistance"/>

@@ -1,6 +1,5 @@
 package com.itderrickh.frolf.Activity;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -11,18 +10,25 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.itderrickh.frolf.Fragments.ScoreFragment;
 import com.itderrickh.frolf.Fragments.ScoreRowFragment;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
+import com.itderrickh.frolf.Services.GroupService;
 import com.itderrickh.frolf.Services.ScoreService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class ScoreActivity extends AppCompatActivity implements ScoreFragment.OnGameFinishedInterface {
 
@@ -34,6 +40,7 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
     private ArrayList<Integer> scoreIds;
     private HashMap<String, ScoreRowFragment> scoreRows;
     private boolean firstReceive = true;
+    private boolean isLeader = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,7 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
 
         this.groupId = getIntent().getIntExtra("groupId", 0);
         this.token = getIntent().getStringExtra("token");
+        this.isLeader = getIntent().getBooleanExtra("isLeader", false);
         scores = new HashMap<>(18, 0.75f);
 
         //Handle updates from the score service
@@ -137,10 +145,29 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
     }
 
     @Override
-    public void OnGameFinished(ArrayList<Integer> scores) {
-        Intent finishGame = new Intent(getApplicationContext(), GameFinishedActivity.class);
-        finishGame.putExtra("scores", scores);
-        startActivity(finishGame);
+    public void OnGameFinished(final ArrayList<Integer> scores) {
+        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        String token = preferences.getString("Auth_Token", "");
+
+        if(isLeader) {
+            GroupService.getInstance().finishGame(token, this.groupId, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("ScoreActivity", e.toString());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Intent finishGame = new Intent(getApplicationContext(), GameFinishedActivity.class);
+                    finishGame.putExtra("scores", scores);
+                    startActivity(finishGame);
+                }
+            });
+        } else {
+            Intent finishGame = new Intent(getApplicationContext(), GameFinishedActivity.class);
+            finishGame.putExtra("scores", scores);
+            startActivity(finishGame);
+        }
     }
 
     @Override

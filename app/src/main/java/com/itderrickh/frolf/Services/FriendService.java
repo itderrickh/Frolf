@@ -1,7 +1,5 @@
 package com.itderrickh.frolf.Services;
 
-import android.location.Location;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,9 +10,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-/**
- * Created by heined50 on 9/26/2016.
- */
 public class FriendService {
     private static FriendService me;
     private static OkHttpClient client;

@@ -6,7 +6,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 
 import java.util.ArrayList;

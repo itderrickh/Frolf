@@ -9,11 +9,19 @@
         android:paddingLeft="5dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:textColor="@color/black"
         android:textSize="16dp"
         android:id="@+id/friendEmail" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:id="@+id/friendDate"
+        android:textSize="16dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:id="@+id/isPlaying"
         android:textSize="16dp" />
 </LinearLayout>
