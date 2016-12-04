@@ -16,6 +16,7 @@ public class FriendService {
     private static final String ADD_FRIEND_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/addFriend.php";
     private static final String GET_FRONT_PAGE_STATS = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getFrontPageStats.php";
     private static final String GET_FRIENDS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getFriends.php";
+    private static final String GET_STATS_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getStatistics.php";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private FriendService() { }
@@ -27,6 +28,29 @@ public class FriendService {
         }
 
         return me;
+    }
+
+    public Call getStatistics(String token, int userId, Callback callback) {
+        JSONObject jsonBuilder = new JSONObject();
+        String json = "{}";
+
+        try {
+            jsonBuilder.put("userId", userId);
+            json = jsonBuilder.toString();
+        } catch (JSONException ex) {
+            //TODO: handle json exception
+        }
+
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(GET_STATS_URL)
+                .addHeader("Authorize", token)
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+        return call;
     }
 
     public Call addFriend(String token, int userId, Callback callback) {
