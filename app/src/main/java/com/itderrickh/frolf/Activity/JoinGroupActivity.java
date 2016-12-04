@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.itderrickh.frolf.Helpers.Group;
 import com.itderrickh.frolf.Helpers.JoinGroupAdapter;
 import com.itderrickh.frolf.R;
+import com.itderrickh.frolf.Services.GPSTracker;
 import com.itderrickh.frolf.Services.GroupService;
 
 import org.json.JSONArray;
@@ -28,6 +29,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class JoinGroupActivity extends AppCompatActivity {
+
+    private GPSTracker gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class JoinGroupActivity extends AppCompatActivity {
         final ListView groupList = (ListView) findViewById(R.id.groupList);
         final TextView emptyText = (TextView) findViewById(R.id.joinEmptyText);
 
+        gps = new GPSTracker(this);
+
         //Get the auth token
         final String token = preferences.getString("Auth_Token", "");
 
@@ -58,7 +63,6 @@ public class JoinGroupActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String data = response.body().string();
 
-                //TODO: handle groups that are far away client side
                 try {
                     final ArrayList<Group> groups = new ArrayList<>();
                     Group groupRow;
@@ -73,8 +77,15 @@ public class JoinGroupActivity extends AppCompatActivity {
                                     row.getString("email")
                         );
 
+                        //Added feature if enabled
+                        if(gps.getIsGPSTrackingEnabled()) {
+                            groupRow.setCurrentLocation(gps.getLatitude(), gps.getLongitude());
+                        }
+
                         groups.add(groupRow);
                     }
+
+                    gps.stopUsingGPS();
 
                     //We should setup the list, click, and progress bar on the UI thread after getting groups
                     runOnUiThread(new Runnable() {
@@ -117,6 +128,15 @@ public class JoinGroupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(gps != null) {
+            gps.stopUsingGPS();
+        }
     }
 
     @Override

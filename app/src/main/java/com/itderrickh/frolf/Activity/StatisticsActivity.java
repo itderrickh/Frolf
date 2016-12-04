@@ -5,9 +5,10 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.itderrickh.frolf.R;
-
 
 public class StatisticsActivity extends AppCompatActivity {
 
@@ -21,6 +22,12 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        LinearLayout statisticsTarget = (LinearLayout) findViewById(R.id.statisticsTarget);
+        statisticsTarget.setVisibility(View.GONE);
+
+
+
     }
 
     @Override

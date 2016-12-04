@@ -35,14 +35,14 @@ public class GroupService {
         return me;
     }
 
-    public Call createGroup(String token, String groupName, Location loc, Callback callback) {
+    public Call createGroup(String token, String groupName, double latitude, double longitude, Callback callback) {
         JSONObject jsonBuilder = new JSONObject();
         String json = "{}";
 
         try {
             jsonBuilder.put("groupName", groupName)
-                    .put("latitude", loc.getLatitude())
-                    .put("longitude", loc.getLongitude());
+                    .put("latitude", latitude)
+                    .put("longitude", longitude);
             json = jsonBuilder.toString();
         } catch (JSONException ex) {
             //TODO: handle exception

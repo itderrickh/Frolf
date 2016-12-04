@@ -13,12 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.itderrickh.frolf.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private CheckBox receiveNotifications;
+    private SeekBar seekbarDistance;
+    private TextView seekbarResult;
     private Button buttonRed;
     private Button buttonOrange;
     private Button buttonYellow;
@@ -48,9 +52,46 @@ public class SettingsActivity extends AppCompatActivity {
         buttonPurple = (Button) findViewById(R.id.buttonPurple);
 
         receiveNotifications = (CheckBox) findViewById(R.id.receiveNotifications);
+        seekbarDistance = (SeekBar) findViewById(R.id.seekBarDistance);
+        seekbarResult = (TextView) findViewById(R.id.seekBarResult);
+
+        //Set our box based on current settings
+        boolean receiveNots = sharedPreferences.getBoolean("Notifications", false);
+        receiveNotifications.setChecked(receiveNots);
+
+        seekbarDistance.setMax(0);
+        seekbarDistance.setMax(50);
+
+        seekbarDistance.setProgress(0);
+        int scanDist = sharedPreferences.getInt("ScanDistance", 10);
+        seekbarDistance.setProgress(scanDist);
 
         setupColorClicks();
         setupCheckBoxClick();
+        setupSeekbar();
+    }
+
+    public void setupSeekbar() {
+        seekbarResult.setText(seekbarDistance.getProgress() + " mi");
+
+        seekbarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                seekbarResult.setText(progress + " mi");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("ScanDistance", seekBar.getProgress());
+                editor.apply();
+            }
+        });
     }
 
     public void setupCheckBoxClick() {
