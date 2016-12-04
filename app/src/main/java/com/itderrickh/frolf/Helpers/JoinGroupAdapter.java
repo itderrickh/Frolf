@@ -35,8 +35,6 @@ public class JoinGroupAdapter extends ArrayAdapter<Group> {
         groupName.setText(group.getName());
 
         if(group.isCurrentLocationSet()) {
-            //Ignore groups from a set distance away
-            //Move to settings later
             if(group.getDistance() > distance) {
                 convertView.setVisibility(View.GONE);
             } else {

@@ -1,5 +1,8 @@
 package com.itderrickh.frolf.Activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +20,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.itderrickh.frolf.R;
+import com.itderrickh.frolf.Services.NotificationService;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -102,15 +106,35 @@ public class SettingsActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("Notifications", true);
                     editor.apply();
+
+                    startNotificationService();
                 } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("Notifications", false);
                     editor.apply();
-                }
 
-                //Do work to start notifications
+                    stopNotificationService();
+                }
             }
         });
+    }
+
+    private void startNotificationService(){
+        String token = sharedPreferences.getString("Auth_Token", "");
+
+        // check for if the service is already running
+        if (NotificationService.isRunning()) {
+            stopNotificationService();
+        }
+
+        Intent intent = new Intent(this, NotificationService.class);
+        intent.putExtra("token", token);
+        startService(intent);
+    }
+
+    private void stopNotificationService() {
+        Intent intent = new Intent(this, NotificationService.class);
+        stopService(intent);
     }
 
     public void setButtonTint(Button button, ColorStateList tint) {

@@ -1,8 +1,12 @@
 package com.itderrickh.frolf.Activity;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,10 +21,14 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.itderrickh.frolf.Fragments.ScoreFragment;
+import com.itderrickh.frolf.Fragments.ScoreRowFragment;
 import com.itderrickh.frolf.Helpers.FrontPageAdapter;
 import com.itderrickh.frolf.Helpers.FrontPageItem;
+import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.FriendService;
+import com.itderrickh.frolf.Services.NotificationService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,11 +45,14 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    BroadcastReceiver receiver;
+    Intent serviceIntent;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Get our preferences for auth and email
-        SharedPreferences preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
+        preferences = getSharedPreferences("FROLF_SETTINGS", Context.MODE_PRIVATE);
         int appColor = preferences.getInt("AppColorNoBar", R.style.AppTheme_NoActionBar);
         setTheme(appColor);
 
@@ -59,6 +70,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        boolean notifs = preferences.getBoolean("Notifications", false);
+
+        if(notifs) {
+            startNotificationService();
+        }
 
         String token = preferences.getString("Auth_Token", "");
         String email = preferences.getString("Email", "");
@@ -113,6 +131,28 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopNotificationService();
+    }
+
+    private void startNotificationService(){
+        // check for if the service is already running
+        if (NotificationService.isRunning()) {
+            stopNotificationService();
+        }
+
+        Intent intent = new Intent(this, NotificationService.class);
+        intent.putExtra("token", preferences.getString("Auth_Token", ""));
+        startService(intent);
+    }
+
+    private void stopNotificationService() {
+        Intent intent = new Intent(this, NotificationService.class);
+        stopService(intent);
     }
 
     @Override
