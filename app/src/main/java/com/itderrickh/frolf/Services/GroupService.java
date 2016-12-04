@@ -21,8 +21,7 @@ public class GroupService {
     private static final String UPDATE_SCORE_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/updateScore.php";
     private static final String GET_GROUPMATES_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/getRecentGroupmates.php";
     private static final String FINISH_GAME_URL = "http://webdev.cs.uwosh.edu/students/heined50/FrolfBackend/finishGame.php";
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private GroupService() { }
 

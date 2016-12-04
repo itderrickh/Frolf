@@ -75,7 +75,7 @@ public class FriendsActivity extends AppCompatActivity {
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date inputDate = dateFormat.parse(dateRow);
                         int isPlayingInt = row.getInt("isplaying");
-                        boolean isPlaying = (isPlayingInt == 1) ? true : false;
+                        boolean isPlaying = (isPlayingInt == 1);
                         friendUsers.add(new FriendUser(row.getInt("id"), inputDate, row.getString("email"), isPlaying));
                     }
 
