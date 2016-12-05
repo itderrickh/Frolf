@@ -1,8 +1,11 @@
 package com.itderrickh.frolf.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,12 +28,21 @@ public class GameFinishedActivity extends AppCompatActivity {
             totalScore += i;
         }
 
+        Button goHome = (Button) findViewById(R.id.goHome);
+        goHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+            }
+        });
+
         finishedText.setText("You scored " + totalScore + " on 18 holes!");
 
         TranslateAnimation animation = new TranslateAnimation(0.0f, 400.0f,
                 0.0f, 0.0f);
         animation.setDuration(1000);
-        animation.setRepeatCount(5);
+        animation.setRepeatCount(10);
         animation.setRepeatMode(2);
         animation.setFillAfter(true);
         disc.startAnimation(animation);
