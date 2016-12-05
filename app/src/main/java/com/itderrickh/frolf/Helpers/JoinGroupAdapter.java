@@ -38,7 +38,7 @@ public class JoinGroupAdapter extends ArrayAdapter<Group> {
             if(group.getDistance() > distance) {
                 convertView.setVisibility(View.GONE);
             } else {
-                groupDistance.setText(group.getDistance() + " mi");
+                groupDistance.setText(String.format("%.2f mi", group.getDistance()));
             }
         } else {
             groupDistance.setText("Unknown distance");

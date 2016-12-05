@@ -1,6 +1,7 @@
 package com.itderrickh.frolf.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,7 +50,10 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FriendUser user = (FriendUser)friendList.getItemAtPosition(position);
-                Toast.makeText(FriendsActivity.this, "Clicked item: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                Intent frenStats = new Intent(getApplicationContext(), StatisticsActivity.class);
+                frenStats.putExtra("userId", user.getId());
+                startActivity(frenStats);
             }
         });
 

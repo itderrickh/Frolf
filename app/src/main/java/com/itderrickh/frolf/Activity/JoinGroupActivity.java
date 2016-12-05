@@ -72,8 +72,8 @@ public class JoinGroupActivity extends AppCompatActivity {
                         groupRow = new Group(
                                     row.getInt("id"),
                                     row.getString("name"),
-                                    row.getDouble("latitude"),
                                     row.getDouble("longitude"),
+                                    row.getDouble("latitude"),
                                     row.getString("email")
                         );
 
