@@ -33,6 +33,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.CreateGroupActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/create_group" />
         <activity
             android:name=".Activity.ScoreActivity"

@@ -17,6 +17,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //bunch of stuff here about compile SDK version,
+    //build tools version, etc.
+
+    signingConfigs {
+        release{
+            storeFile file("MyKeyStore.jks")
+            storePassword "Frolf2016"
+            keyAlias "MyAppKey"
+            keyPassword "Frolf2016"
+        }
+    }
 }
 
 dependencies {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.itderrickh.frolf.Helpers.InputFilterMinMax;
 import com.itderrickh.frolf.Helpers.OnSwipeTouchListener;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
@@ -92,6 +95,8 @@ public class ScoreFragment extends Fragment {
         scoreField = (EditText) getView().findViewById(R.id.scoreField);
         fragmentManager = getFragmentManager();
 
+        scoreField.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "10")});
+
         if(holeNumber == 17) {
             finishGame.setVisibility(View.VISIBLE);
         } else {
@@ -167,10 +172,13 @@ public class ScoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int value = Integer.parseInt(scoreField.getText().toString());
-                value++;
-                upToDateScores.set(holeNumber, value);
 
-                scoreField.setText(value + "");
+                if(value < 10) {
+                    value++;
+                    upToDateScores.set(holeNumber, value);
+
+                    scoreField.setText(value + "");
+                }
             }
         });
 
@@ -179,10 +187,13 @@ public class ScoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int value = Integer.parseInt(scoreField.getText().toString());
-                value--;
-                upToDateScores.set(holeNumber, value);
 
-                scoreField.setText(value + "");
+                if(value != 0) {
+                    value--;
+                    upToDateScores.set(holeNumber, value);
+
+                    scoreField.setText(value + "");
+                }
             }
         });
 
@@ -202,49 +213,61 @@ public class ScoreFragment extends Fragment {
 
     private void nextHole() {
         if(nextFragment != null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
-            fragmentTransaction.replace(R.id.fragment_container, nextFragment);
-            fragmentTransaction.commit();
+            String scoreFieldText = scoreField.getText().toString();
 
-            int newScore = Integer.parseInt(scoreField.getText().toString());
+            if(!scoreFieldText.equals("")) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right);
+                fragmentTransaction.replace(R.id.fragment_container, nextFragment);
+                fragmentTransaction.commit();
 
-            //Save the score async
-            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    //Handle error
-                }
+                int newScore = Integer.parseInt(scoreFieldText);
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    //Do nothing we updated successfully
-                }
-            });
+                //Save the score async
+                GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        //Handle error
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        //Do nothing we updated successfully
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Score field is invalid", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     private void previousHole() {
         if(previousFragment != null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
-            fragmentTransaction.replace(R.id.fragment_container, previousFragment);
-            fragmentTransaction.commit();
+            String scoreFieldText = scoreField.getText().toString();
 
-            int newScore = Integer.parseInt(scoreField.getText().toString());
+            if(!scoreFieldText.equals("")) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
+                fragmentTransaction.replace(R.id.fragment_container, previousFragment);
+                fragmentTransaction.commit();
 
-            //Save the score async
-            GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    //Handle error
-                }
+                int newScore = Integer.parseInt(scoreFieldText);
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    //Do nothing we updated successfully
-                }
-            });
+                //Save the score async
+                GroupService.getInstance().updateScore(token, scores.get(scoreIds.get(holeNumber)).getId(), newScore, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        //Handle error
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        //Do nothing we updated successfully
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Score field is invalid", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
