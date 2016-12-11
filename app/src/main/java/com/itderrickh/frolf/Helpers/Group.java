@@ -29,6 +29,7 @@ public class Group {
     public boolean isCurrentLocationSet() {
         return isCurrentLocationSet;
     }
+    public boolean isLocationSet() { return (latitude != 0 && longitude != 0); }
 
     public double getDistance() {
         if(curLong == 0 || curLat == 0) {

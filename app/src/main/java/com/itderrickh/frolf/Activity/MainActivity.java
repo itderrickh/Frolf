@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -83,12 +84,10 @@ public class MainActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         TextView emailView = (TextView)header.findViewById(R.id.userEmail);
-        TextView userView = (TextView)header.findViewById(R.id.userName);
         final TextView homeEmptyText = (TextView) findViewById(R.id.homeEmptyText);
 
         //Set the email in the drawer
         emailView.setText(email);
-        userView.setText("");
         final ListView frontPageList = (ListView) findViewById(R.id.frontPageInfo);
 
         FriendService.getInstance().getFrontPageStats(token, new Callback() {
@@ -139,20 +138,31 @@ public class MainActivity extends AppCompatActivity
         stopNotificationService();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopNotificationService();
+    }
+
     private void startNotificationService(){
         // check for if the service is already running
-        if (NotificationService.isRunning()) {
-            stopNotificationService();
-        }
+        if (!NotificationService.isRunning()) {
 
-        Intent intent = new Intent(this, NotificationService.class);
-        intent.putExtra("token", preferences.getString("Auth_Token", ""));
-        startService(intent);
+            if(serviceIntent == null) {
+                serviceIntent = new Intent(this, NotificationService.class);
+                serviceIntent.putExtra("token", preferences.getString("Auth_Token", ""));
+            }
+
+            startService(serviceIntent);
+            registerReceiver(receiver, new IntentFilter("com.itderrickh.broadcast"));
+        }
     }
 
     private void stopNotificationService() {
-        Intent intent = new Intent(this, NotificationService.class);
-        stopService(intent);
+        if(NotificationService.isRunning()) {
+            unregisterReceiver(receiver);
+            stopService(serviceIntent);
+        }
     }
 
     @Override

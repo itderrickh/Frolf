@@ -11,30 +11,19 @@ import android.widget.TextView;
 import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ScoreRowFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ScoreRowFragment extends Fragment {
+public class ScoreRowFragment extends Fragment implements Serializable {
 
     private ArrayList<Score> scores;
     private String username;
     private ArrayList<TextView> scoresView;
     private TextView usernameView;
+
     public ScoreRowFragment() { }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param scores Parameter 1.
-     * @return A new instance of fragment ScoreRow.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ScoreRowFragment newInstance(ArrayList<Score> scores, String username) {
         ScoreRowFragment fragment = new ScoreRowFragment();
         Bundle args = new Bundle();

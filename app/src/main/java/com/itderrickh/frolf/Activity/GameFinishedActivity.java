@@ -1,8 +1,11 @@
 package com.itderrickh.frolf.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,7 +13,7 @@ import com.itderrickh.frolf.R;
 
 import java.util.ArrayList;
 
-public class GameFinishedActivity extends AppCompatActivity {
+public class GameFinishedActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +37,14 @@ public class GameFinishedActivity extends AppCompatActivity {
         animation.setRepeatMode(2);
         animation.setFillAfter(true);
         disc.startAnimation(animation);
+
+        Button goHome = (Button) findViewById(R.id.goHome);
+        goHome.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(i);
     }
 }

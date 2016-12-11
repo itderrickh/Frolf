@@ -31,6 +31,7 @@ import okhttp3.Response;
 public class JoinGroupActivity extends AppCompatActivity {
 
     private GPSTracker gps;
+    private ArrayList<Group> groups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class JoinGroupActivity extends AppCompatActivity {
         final TextView emptyText = (TextView) findViewById(R.id.joinEmptyText);
 
         gps = new GPSTracker(this);
+        groups = new ArrayList<>();
 
         //Get the auth token
         final String token = preferences.getString("Auth_Token", "");
@@ -56,7 +58,7 @@ public class JoinGroupActivity extends AppCompatActivity {
         GroupService.getInstance().getGroupsNearMe(token, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //Handle exception here
+                e.printStackTrace();
             }
 
             @Override
@@ -64,7 +66,6 @@ public class JoinGroupActivity extends AppCompatActivity {
                 String data = response.body().string();
 
                 try {
-                    final ArrayList<Group> groups = new ArrayList<>();
                     Group groupRow;
                     JSONArray result = new JSONArray(data);
                     for(int i = 0; i < result.length(); i++) {

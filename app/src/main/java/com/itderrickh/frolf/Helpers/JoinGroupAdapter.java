@@ -34,7 +34,7 @@ public class JoinGroupAdapter extends ArrayAdapter<Group> {
 
         groupName.setText(group.getName());
 
-        if(group.isCurrentLocationSet()) {
+        if(group.isCurrentLocationSet() && group.isLocationSet()) {
             if(group.getDistance() > distance) {
                 convertView.setVisibility(View.GONE);
             } else {

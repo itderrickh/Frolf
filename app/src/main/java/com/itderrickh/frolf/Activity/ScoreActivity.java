@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import com.itderrickh.frolf.Fragments.ScoreFragment;
 import com.itderrickh.frolf.Fragments.ScoreRowFragment;
@@ -39,6 +40,7 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
     private HashMap<Integer, Score> scores;
     private ArrayList<Integer> scoreIds;
     private HashMap<String, ScoreRowFragment> scoreRows;
+
     private boolean firstReceive = true;
     private boolean isLeader = false;
 
@@ -51,16 +53,13 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
 
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
-            scoreRows = (HashMap<String, ScoreRowFragment>)savedInstanceState.getSerializable("scoreRows");
-        } else {
-            scoreRows = new HashMap<>(10, 0.75f);
-        }
-
+        scoreRows = new HashMap<>(10, 0.75f);
 
         int hole = 0;
         if(savedInstanceState != null) {
             hole = savedInstanceState.getInt("holeNumber");
+            scores = (HashMap<Integer, Score>) savedInstanceState.getSerializable("scores");
+            scoreIds = (ArrayList<Integer>) savedInstanceState.getSerializable("scoreIds");
         }
 
         final int holeNumber = hole;
@@ -118,7 +117,7 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
                             } else {
                                 ScoreRowFragment srf = ScoreRowFragment.newInstance(userScores, email);
                                 scoreRows.put(email, srf);
-                                fragmentTransaction.add(R.id.scoreTarget, srf, "SCORE_ROW" + email);
+                                fragmentTransaction.add(R.id.scoreTarget, srf, "SCORE_ROW");
                             }
 
                             fragmentTransaction.commit();
@@ -142,6 +141,11 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
                 }
             }
         };
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -172,13 +176,21 @@ public class ScoreActivity extends AppCompatActivity implements ScoreFragment.On
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        for (String s: scoreRows.keySet()) {
+            fragmentTransaction.remove(scoreRows.get(s));
+        }
+
+        fragmentTransaction.commit();
+
+        super.onSaveInstanceState(outState);
+
 
         ScoreFragment scoreFragment = (ScoreFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+        outState.putSerializable("scores", scores);
+        outState.putSerializable("scoreIds", scoreIds);
         outState.putInt("holeNumber", scoreFragment.holeNumber);
-        outState.putSerializable("scoreRows", scoreRows);
     }
 
     @Override
