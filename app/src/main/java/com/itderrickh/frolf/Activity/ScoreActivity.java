@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.itderrickh.frolf.Fragments.ScoreFragment;
 import com.itderrickh.frolf.Fragments.ScoreRowFragment;

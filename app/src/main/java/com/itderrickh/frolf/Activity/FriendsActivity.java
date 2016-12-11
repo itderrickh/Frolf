@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.itderrickh.frolf.Helpers.FriendUser;
 import com.itderrickh.frolf.Helpers.FriendsAdapter;

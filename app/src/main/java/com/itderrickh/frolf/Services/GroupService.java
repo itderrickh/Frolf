@@ -1,7 +1,5 @@
 package com.itderrickh.frolf.Services;
 
-import android.location.Location;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

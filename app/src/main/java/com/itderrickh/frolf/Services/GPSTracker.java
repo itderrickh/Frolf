@@ -21,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-
 public class GPSTracker extends Service implements LocationListener {
 
     // Get Class Name

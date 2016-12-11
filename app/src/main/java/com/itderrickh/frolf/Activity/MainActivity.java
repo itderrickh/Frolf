@@ -1,13 +1,10 @@
 package com.itderrickh.frolf.Activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,11 +19,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.itderrickh.frolf.Fragments.ScoreFragment;
-import com.itderrickh.frolf.Fragments.ScoreRowFragment;
 import com.itderrickh.frolf.Helpers.FrontPageAdapter;
 import com.itderrickh.frolf.Helpers.FrontPageItem;
-import com.itderrickh.frolf.Helpers.Score;
 import com.itderrickh.frolf.R;
 import com.itderrickh.frolf.Services.FriendService;
 import com.itderrickh.frolf.Services.NotificationService;

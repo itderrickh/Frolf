@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.itderrickh.frolf.R;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class StatisticsAdapter extends ArrayAdapter<Statistic> {
