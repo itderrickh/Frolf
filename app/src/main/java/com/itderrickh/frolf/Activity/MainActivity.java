@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void stopNotificationService() {
-        if(NotificationService.isRunning()) {
+        if(NotificationService.isRunning() && receiver != null) {
             unregisterReceiver(receiver);
             stopService(serviceIntent);
         }

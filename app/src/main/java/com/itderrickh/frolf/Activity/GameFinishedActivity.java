@@ -27,13 +27,13 @@ public class GameFinishedActivity extends AppCompatActivity implements View.OnCl
         for(Integer i : scores) {
             totalScore += i;
         }
-
+        
         finishedText.setText("You scored " + totalScore + " on 18 holes!");
 
         TranslateAnimation animation = new TranslateAnimation(0.0f, 400.0f,
                 0.0f, 0.0f);
         animation.setDuration(1000);
-        animation.setRepeatCount(5);
+        animation.setRepeatCount(10);
         animation.setRepeatMode(2);
         animation.setFillAfter(true);
         disc.startAnimation(animation);
