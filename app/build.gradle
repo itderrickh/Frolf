@@ -11,21 +11,17 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    //bunch of stuff here about compile SDK version,
-    //build tools version, etc.
-
     signingConfigs {
         release{
             storeFile file("MyKeyStore.jks")
             storePassword "Frolf2016"
             keyAlias "MyAppKey"
             keyPassword "Frolf2016"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
         }
     }
 }
