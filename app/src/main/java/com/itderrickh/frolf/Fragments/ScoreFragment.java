@@ -95,7 +95,7 @@ public class ScoreFragment extends Fragment {
         scoreField = (EditText) getView().findViewById(R.id.scoreField);
         fragmentManager = getFragmentManager();
 
-        scoreField.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "10")});
+        scoreField.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "10")});
 
         if(holeNumber == 17) {
             finishGame.setVisibility(View.VISIBLE);
